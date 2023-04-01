@@ -45,8 +45,8 @@ void Client::setPhoneNumber(char* ph) {
 }
 
 void Client::setEmail(char* em) {
-    delete[] phoneNumber;
-    phoneNumber = new char[strlen(em) + 1];
-    strcpy(phoneNumber, em);
+    delete[] email;
+    email = new char[strlen(em) + 1];
+    strcpy(email, em);
 }
 

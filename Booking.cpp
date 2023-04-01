@@ -7,6 +7,7 @@
 Booking::Booking(char* bDate, char* stDate, int numOfCl, List<Client>* lOfClients, Tour* tr) {
 	setBookingDate(bDate);
 	setStartDate(stDate);
+	setNumberOfClients(numOfCl);
 	setListOfClients(lOfClients);
 	setTour(tr);
 }
@@ -40,4 +41,9 @@ void Booking::setStartDate(char* sd) {
 
 void Booking::setNumberOfClients(int n) { numberOfClients = n; }
 void Booking::setListOfClients(List<Client>* lc) { listOfClients = lc; }
-void Booking::setTour(Tour* t) { tour = t; }
+void Booking::setTour(Tour* t) {
+	if (tour != nullptr) {
+		delete tour;
+	}
+	tour = t; 
+}

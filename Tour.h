@@ -20,7 +20,7 @@ public:
 	char* getDuration() { return duration; };
 	float getPrice() { return price; };
 	char* getRoute() { return route; };
-	char* getDescriprion() { return description; };
+	char* getDescrition() { return description; };
 	
 };
 

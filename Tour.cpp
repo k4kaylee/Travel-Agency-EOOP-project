@@ -1,3 +1,4 @@
+#define _CRT_SECURE_NO_WARNINGS
 #include "Tour.h"
 #include <cstring>
 
@@ -11,10 +12,10 @@ Tour::Tour(char* nm, char* drtn, float prc, char* rt, char* dscrptn) {
 }
 
 Tour::~Tour() {
-	delete name;
-	delete duration;
-	delete route;
-	delete description;
+	delete[] name;
+	delete[] duration;
+	delete[] route;
+	delete[] description;
 }
 
 void Tour::setName(char* nm) {

@@ -18,6 +18,11 @@ public:
 	}
 
 
+	void add() {
+
+	}
+
+
 	void free() {
 		Item* curr = this->head;
 		while (curr != nullptr) {
