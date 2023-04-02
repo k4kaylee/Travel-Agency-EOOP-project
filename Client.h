@@ -1,6 +1,6 @@
 #pragma once
 #include "List.h"
-
+#include "Tour.h"
 
 
 class Client{
@@ -11,7 +11,7 @@ private:
 	char* email;
 	List<Tour>* listOfOrderedTours;
 public:
-    Client(char* n, char* ln, char* ph, char* e);
+    Client(const char* n, const char* ln, const char* ph, const char* e);
     ~Client();
 
     // Getters
@@ -21,9 +21,9 @@ public:
     char* getEmail();
 
     // Setters
-    void setName(char* n);
-    void setLastname(char* n);
-    void setPhoneNumber(char* n);
-    void setEmail(char* n);
+    void setName(const char* n);
+    void setLastname(const char* n);
+    void setPhoneNumber(const char* n);
+    void setEmail(const char* n);
 };
 

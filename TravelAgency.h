@@ -1,5 +1,8 @@
 #pragma once
-#include "ClientList.h"
+#include "List.h"
+#include "Client.h"
+#include "Tour.h"
+
 
 
 

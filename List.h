@@ -1,8 +1,8 @@
 #pragma once
-#include "Tour.h"
 
 
-template<typename T> class List {
+template<typename T> 
+class List {
 private:
 	struct Item {
 		T* ptr;
@@ -18,12 +18,25 @@ public:
 	}
 
 
-	void add() {
+	void add(Item newItem) {
+		Item* current = head;
+		Item* previous = nullptr;
 
+		while (current != nullptr && strcmp(current->item->name, current->item->name < 0)) {
+			previous = current;
+			current = current->next;
+		}
+		if (previous == nullptr) {
+			newItem->next = head;
+			head = newItem;
+		}
+		else {
+			previous->next = newItem;
+			newItem->next = current;
+		}
 	}
 
-
-	void free() {
+	void free() { 
 		Item* curr = this->head;
 		while (curr != nullptr) {
 			Item* temp = curr;
