@@ -25,5 +25,6 @@ public:
     void setLastname(const char* n);
     void setPhoneNumber(const char* n);
     void setEmail(const char* n);
+    void print();
 };
 

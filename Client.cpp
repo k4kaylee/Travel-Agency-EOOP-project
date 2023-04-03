@@ -1,6 +1,7 @@
 #define _CRT_SECURE_NO_WARNINGS
 #include "Client.h";
 #include <cstring>;
+#include <iostream>
 
 
 
@@ -50,3 +51,9 @@ void Client::setEmail(const char* em) {
     strcpy(email, em);
 }
 
+void Client::print() {
+    std::cout << "Name: " << name <<
+                 "\nLastname: " << lastname <<
+                 "\nPhone number: " << phoneNumber <<
+                 "\nEmail: " << email << "\n\n";
+}

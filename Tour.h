@@ -7,14 +7,14 @@ private:
 	char* route;
 	char* description;
 public:
-	Tour(char* nm, char* drtn, float prc, char* rt, char* dscrptn);
+	Tour(const char* nm, const char* drtn, float prc, const char* rt, const char* dscrptn);
 	~Tour();
 
-	void setName(char* nm);
-	void setDuration(char* drtn);
+	void setName(const char* nm);
+	void setDuration(const char* drtn);
 	void setPrice(float prc);
-	void setRoute(char* rt);
-	void setDescription(char* dscrptn);
+	void setRoute(const char* rt);
+	void setDescription(const char* dscrptn);
 
 	char* getName() { return name; };
 	char* getDuration() { return duration; };
@@ -22,6 +22,7 @@ public:
 	char* getRoute() { return route; };
 	char* getDescrition() { return description; };
 	
+	void print();
 };
 
-	
+		

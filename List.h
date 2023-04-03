@@ -1,5 +1,6 @@
 #pragma once
-
+#include <cstring>
+#include <iostream>
 
 template<typename T> 
 class List {
@@ -18,23 +19,35 @@ public:
 	}
 
 
-	void add(Item newItem) {
-		Item* current = head;
-		Item* previous = nullptr;
+	void add(T* itemPtr) {
+		Item* newItem = new Item;
+		newItem->ptr = itemPtr;
+		newItem->next = nullptr;
 
-		while (current != nullptr && strcmp(current->item->name, current->item->name < 0)) {
-			previous = current;
-			current = current->next;
-		}
-		if (previous == nullptr) {
+		if (head == nullptr || strcmp(head->ptr->getName(), newItem->ptr->getName()) > 0) {
 			newItem->next = head;
 			head = newItem;
 		}
 		else {
-			previous->next = newItem;
-			newItem->next = current;
+			Item* current = head;
+			while (current->next != nullptr && strcmp(current->next->ptr->getName(), newItem->ptr->getName()) < 0) {
+				current = current->next;
+			}
+			newItem->next = current->next;
+			current->next = newItem;
 		}
 	}
+
+	void print() {
+		Item* current = head;
+		if (current != nullptr) {
+			while (current != nullptr) {
+				current->ptr->print();
+				current = current->next;
+			}
+			std::cout << "\n\n";
+		}
+	};
 
 	void free() { 
 		Item* curr = this->head;
