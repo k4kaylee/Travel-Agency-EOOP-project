@@ -1,7 +1,9 @@
 #pragma once
+class Client;
+class Booking;
+class Tour;
 #include <cstring>
 #include <iostream>
-
 
 template<typename T> 
 class List {
@@ -20,7 +22,26 @@ public:
 	}
 
 
-	void add(T* itemPtr) {
+	void add(Client* itemPtr) {
+		Item* newItem = new Item;
+		newItem->ptr = itemPtr;
+		newItem->next = nullptr;
+		
+		if (head == nullptr || strcmp(head->ptr->getName(), newItem->ptr->getName()) > 0) {
+			newItem->next = head;
+			head = newItem;
+		}
+		else {
+			Item* current = head;
+			while (current->next != nullptr && strcmp(current->next->ptr->getName(), newItem->ptr->getName()) < 0) {
+				current = current->next;
+			}
+			newItem->next = current->next;
+			current->next = newItem;
+		}
+	}
+
+	void add(Tour* itemPtr) {
 		Item* newItem = new Item;
 		newItem->ptr = itemPtr;
 		newItem->next = nullptr;
@@ -38,6 +59,26 @@ public:
 			current->next = newItem;
 		}
 	}
+	
+	void add(Booking* itemPtr) {
+		Item* newItem = new Item;
+		newItem->ptr = itemPtr;
+		newItem->next = nullptr;
+
+		if (head == nullptr || strcmp(head->ptr->getBookingDate(), newItem->ptr->getBookingDate()) > 0) {
+			newItem->next = head;
+			head = newItem;
+		}
+		else {
+			Item* current = head;
+			while (current->next != nullptr && strcmp(current->next->ptr->getBookingDate(), newItem->ptr->getBookingDate()) < 0) {
+				current = current->next;
+			}
+			newItem->next = current->next;
+			current->next = newItem;
+		}
+	}
+
 
 	void print() {
 		Item* current = head;
