@@ -1,15 +1,16 @@
 #define _CRT_SECURE_NO_WARNINGS
 #include "Client.h";
 #include <cstring>;
+#include <ctime>;
 #include <iostream>
 
 
-
-Client::Client(const char* n, const char* ln, const char* ph, const char* em) {
+Client::Client(const char* n, const char* ln, const char* ph, const char* em, List<Booking>* lOb) {
     setName(n);
     setLastname(ln);
     setPhoneNumber(ph);
     setEmail(em);
+    listOfBookings = lOb;
 }
 
 
@@ -17,6 +18,7 @@ Client::~Client() {
     delete[] name;
     delete[] lastname;
     delete[] phoneNumber;
+    listOfBookings->free();
     delete[] email;
 }
 
@@ -56,4 +58,12 @@ void Client::print() {
                  "\nLastname: " << lastname <<
                  "\nPhone number: " << phoneNumber <<
                  "\nEmail: " << email << "\n\n";
+}
+
+void Client::book(Tour* tr, int numOfCl = 1) {
+    std::time_t now = std::time(nullptr);
+    char currentTime[20];
+    std::strftime(currentTime, 20, "%Y-%m-%d %H:%M:%S", std::localtime(&now));
+    Booking* newBooking = new Booking(currentTime, numOfCl, tr);
+    listOfBookings->add(newBooking);
 }

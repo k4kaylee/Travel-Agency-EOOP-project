@@ -1,32 +1,31 @@
 #pragma once
-#include "List.h"
 #include "Tour.h"
-#include "Client.h"
 
+
+enum bookingStatus {
+	ongoing,
+	finished
+};
 
 class Booking{
 private:
 	char* bookingDate;
-	char* startDate;
 	int numberOfClients;
-	List<Client>* listOfClients;
 	Tour* tour;
+	bookingStatus status;
 public:
-	Booking(char* bDate, char* stDate, int numOfCl, List<Client>* lOfClients, Tour* tr);
+	Booking(const char* bDate, int numOfCl, Tour* tr);
 	~Booking();
 
 	// Getters
 	char* getBookingDate();
-	char* getStartDate();
 	int getNumberOfClients();
-	List<Client>* getListOfClients();
 	Tour* getTour();
 
 	//Setters
-	void setBookingDate(char* bDate);
-	void setStartDate(char* stDate);
+	void setBookingDate(const char* bDate);
+
 	void setNumberOfClients(int numOfCl);
-	void setListOfClients(List<Client>* lOfClients);
 	void setTour(Tour* tr);
 };
 

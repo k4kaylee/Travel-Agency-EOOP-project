@@ -4,43 +4,30 @@
 
 
 
-Booking::Booking(char* bDate, char* stDate, int numOfCl, List<Client>* lOfClients, Tour* tr) {
+Booking::Booking(const char* bDate, int numOfCl, Tour* tr) {
 	setBookingDate(bDate);
-	setStartDate(stDate);
 	setNumberOfClients(numOfCl);
-	setListOfClients(lOfClients);
 	setTour(tr);
 }
 
 Booking::~Booking() {
 	delete[] bookingDate;
-	delete[] startDate;
-	listOfClients->free();
 	delete tour;
 }
 
 // Getters
 char* Booking::getBookingDate() { return bookingDate; }
-char* Booking::getStartDate() { return startDate; }
 int Booking::getNumberOfClients() { return numberOfClients; }
-List<Client>* Booking::getListOfClients() { return listOfClients; }
 Tour* Booking::getTour() { return tour; }
 
 //Setters
-void Booking::setBookingDate(char* bd) {
+void Booking::setBookingDate(const char* bd) {
     delete[] bookingDate;
     bookingDate = new char[strlen(bd) + 1];
     strcpy(bookingDate, bd);
 }
 
-void Booking::setStartDate(char* sd) {
-    delete[] startDate;
-    startDate = new char[strlen(sd) + 1];
-    strcpy(startDate, sd);
-}
-
 void Booking::setNumberOfClients(int n) { numberOfClients = n; }
-void Booking::setListOfClients(List<Client>* lc) { listOfClients = lc; }
 void Booking::setTour(Tour* t) {
 	if (tour != nullptr) {
 		delete tour;

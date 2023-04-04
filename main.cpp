@@ -16,42 +16,45 @@ int main() {
 	listOfClients->add(client4);
 
 
-	Tour* tour1 = new Tour{ "Hawaii Paradise",
+	Tour* tour1 = new Tour( "Hawaii Paradise",
 						    "7 days",
 						    2500.0,
 						    "Honolulu to Maui",
+							"21.05.2023",
 						    "Experience the best of Hawaii with this 7-day tour that takes you\
 						    \nfrom Honolulu to Maui. Enjoy stunning beaches, tropical rainforests,\
-						    \nsand breathtaking landscapes." };
+						    \nsand breathtaking landscapes." );
 
-	Tour* tour2 = new Tour{ "European Adventure",
+	Tour* tour2 = new Tour( "European Adventure",
 							"14 days",
 							4500.0,
 							"Paris to Barcelona",
+							"15.02.2021",
 							"Embark on a 14-day adventure through Europe, starting in Paris and\
 							\nending in Barcelona. Discover the beauty of the continent with this\
-							\nexciting tour that covers 6 different countries." };
+							\nexciting tour that covers 6 different countries." );
 
-	Tour* tour3 = new Tour{ "African Safari",
+	Tour* tour3 = new Tour( "African Safari",
 							"10 days",
 							3500.0,
 							"Kenya to Tanzania",
-							"Experience the ultimate adventure with this 10-day safari tour\
-							\nthat takes you through the heart of Kenya and Tanzania. Get up close\
-							\nand personal with some of Africa's most majestic wildlife." };
+							"21.02.2024",
+							"Experience the ultimate adventure with this 10-day safari tour\nthat takes you through the heart of Kenya and Tanzania. Get up close\nand personal with some of Africa's most majestic wildlife." );
 
-	Tour* tour4 = new Tour{ "Paris Tour",
+	Tour* tour4 = new Tour( "Paris Tour",
 							"4 days",
 							1200.0,
 							"Eiffel Tower, Notre-Dame Cathedral, The Louvre",
-							"Experience the culture and beauty of Paris in this four-day tour." };
+							"01.07.2023",
+							"Experience the culture and beauty of Paris in this four-day tour." );
 
-	Tour* tour5 = new Tour{ "Australia Tour", 
+	Tour* tour5 = new Tour( "Australia Tour", 
 							"10 days", 
 							3500.0, 
 							"Sydney Opera House, Great Barrier Reef, Uluru", 
+							"30.08.2023",
 							"Explore the stunning natural wonders and iconic landmarks\
-							\nof Australia in this ten-day tour."};
+							\nof Australia in this ten-day tour.");
 
 	List<Tour>* listOfTours = new List<Tour>;
 	listOfTours->add(tour1);
@@ -61,5 +64,9 @@ int main() {
 
 	listOfClients->print();
 	listOfTours->print();
+
+	TravelAgency* agency = new TravelAgency(listOfTours, listOfClients);
+
+	agency->getTourList()->print();
 	return 0;
 }

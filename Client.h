@@ -1,4 +1,5 @@
 #pragma once
+#include "Booking.h"
 #include "List.h"
 #include "Tour.h"
 
@@ -9,9 +10,9 @@ private:
 	char* lastname;
 	char* phoneNumber;
 	char* email;
-	List<Tour>* listOfOrderedTours;
+	List<Booking>* listOfBookings;
 public:
-    Client(const char* n, const char* ln, const char* ph, const char* e);
+    Client(const char* n, const char* ln, const char* ph, const char* e, List<Booking>* lOb = nullptr);
     ~Client();
 
     // Getters
@@ -25,6 +26,7 @@ public:
     void setLastname(const char* n);
     void setPhoneNumber(const char* n);
     void setEmail(const char* n);
+    void book(Tour* tr, int numOfCl);
     void print();
 };
 

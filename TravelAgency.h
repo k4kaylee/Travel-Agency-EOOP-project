@@ -13,9 +13,11 @@ private:
 public:
 	TravelAgency(List<Tour>* lOt, List<Client>* lOc);
 	~TravelAgency();
+
+	List<Tour>* getTourList() { return  listOfTours; };
+	List<Client>* getClientList() { return listOfClients; };
 	void setTourList(List<Tour>* lOt);
 	void setClientList(List<Client>* cOl);
-
 
 };
 
