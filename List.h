@@ -20,7 +20,8 @@ public:
 	~List() {
 		this->free();
 	}
-
+	
+	Item* getHead() { return head; };
 
 	void add(Client* itemPtr) {
 		Item* newItem = new Item;

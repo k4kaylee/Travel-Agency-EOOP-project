@@ -23,7 +23,7 @@ int main() {
 							"21.05.2023",
 						    "Experience the best of Hawaii with this 7-day tour that takes you\
 						    \nfrom Honolulu to Maui. Enjoy stunning beaches, tropical rainforests,\
-						    \nsand breathtaking landscapes." );
+						    \nsand breathtaking landscapes.\n" );
 
 	Tour* tour2 = new Tour( "European Adventure",
 							"14 days",
@@ -32,21 +32,21 @@ int main() {
 							"15.02.2021",
 							"Embark on a 14-day adventure through Europe, starting in Paris and\
 							\nending in Barcelona. Discover the beauty of the continent with this\
-							\nexciting tour that covers 6 different countries." );
+							\nexciting tour that covers 6 different countries.\n" );
 
 	Tour* tour3 = new Tour( "African Safari",
 							"10 days",
 							3500.0,
 							"Kenya to Tanzania",
 							"21.02.2024",
-							"Experience the ultimate adventure with this 10-day safari tour\nthat takes you through the heart of Kenya and Tanzania. Get up close\nand personal with some of Africa's most majestic wildlife." );
+							"Experience the ultimate adventure with this 10-day safari tour\nthat takes you through the heart of Kenya and Tanzania. Get up close\nand personal with some of Africa's most majestic wildlife.\n" );
 
 	Tour* tour4 = new Tour( "Paris Tour",
 							"4 days",
 							1200.0,
 							"Eiffel Tower, Notre-Dame Cathedral, The Louvre",
 							"01.07.2023",
-							"Experience the culture and beauty of Paris in this four-day tour." );
+							"Experience the culture and beauty of Paris in this four-day tour.\n" );
 
 	Tour* tour5 = new Tour( "Australia Tour", 
 							"10 days", 
@@ -54,7 +54,7 @@ int main() {
 							"Sydney Opera House, Great Barrier Reef, Uluru", 
 							"30.08.2023",
 							"Explore the stunning natural wonders and iconic landmarks\
-							\nof Australia in this ten-day tour.");
+							\nof Australia in this ten-day tour.\n");
 
 	List<Tour>* listOfTours = new List<Tour>;
 	listOfTours->add(tour1);
@@ -68,5 +68,8 @@ int main() {
 	TravelAgency* agency = new TravelAgency(listOfTours, listOfClients);
 
 	agency->getTourList()->print();
+	client5->book(tour1);
+
+	client5->print();
 	return 0;
 }

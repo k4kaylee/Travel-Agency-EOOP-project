@@ -57,10 +57,15 @@ void Client::print() {
     std::cout << "Name: " << name <<
                  "\nLastname: " << lastname <<
                  "\nPhone number: " << phoneNumber <<
-                 "\nEmail: " << email << "\n\n";
+                 "\nEmail: " << email <<
+                 "\nBookings: \n";
+    if (listOfBookings->getHead() == nullptr)
+        std::cout << "\tNo bookings were made.\n\n";
+    else
+        listOfBookings->print();
 }
 
-void Client::book(Tour* tr, int numOfCl = 1) {
+void Client::book(Tour* tr, int numOfCl) {
     std::time_t now = std::time(nullptr);
     char currentTime[20];
     std::strftime(currentTime, 20, "%Y-%m-%d %H:%M:%S", std::localtime(&now));

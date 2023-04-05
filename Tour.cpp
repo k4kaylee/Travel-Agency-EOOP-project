@@ -59,5 +59,5 @@ void Tour::print() {
 		"\nDuration: " << duration <<
 		"\nPrice: " << price <<
 		"\nRoute: " << route <<
-		"\nDescription: " << description << "\n\n";
+		"\nDescription: " << description;
 }

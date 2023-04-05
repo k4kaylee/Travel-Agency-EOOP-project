@@ -1,6 +1,7 @@
 #define _CRT_SECURE_NO_WARNINGS
 #include "Booking.h"
 #include <cstring>
+#include <iostream>
 
 
 
@@ -33,4 +34,17 @@ void Booking::setTour(Tour* t) {
 		delete tour;
 	}
 	tour = t; 
+}
+
+void Booking::print() {
+	std::cout << "\tBooking date: " << bookingDate <<
+			 	 "\n\tClients registered: " << numberOfClients <<
+		         "\n\tLinked tour: \n";
+	tour->print();
+	if (status == bookingStatus::ongoing) {
+		std::cout << "\tBooking status: ongoing";
+	}
+	else {
+		std::cout << "\tBooking status: finished";
+	}
 }

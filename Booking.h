@@ -3,8 +3,8 @@
 
 
 enum bookingStatus {
-	ongoing,
-	finished
+	finished,
+	ongoing
 };
 
 class Booking{
@@ -24,8 +24,9 @@ public:
 
 	//Setters
 	void setBookingDate(const char* bDate);
-
 	void setNumberOfClients(int numOfCl);
 	void setTour(Tour* tr);
+
+	void print();
 };
 
