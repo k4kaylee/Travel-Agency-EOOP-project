@@ -55,9 +55,9 @@ void Tour::setDescription(const char* dscrptn) {
 }
 
 void Tour::print() {
-	std::cout << "Name: " << name <<
+	std::cout << "\nName: " << name <<
 		"\nDuration: " << duration <<
 		"\nPrice: " << price <<
 		"\nRoute: " << route <<
-		"\nDescription: " << description;
+		"\nDescription: " << description << std::endl;
 }

@@ -37,14 +37,18 @@ void Booking::setTour(Tour* t) {
 }
 
 void Booking::print() {
-	std::cout << "\tBooking date: " << bookingDate <<
-			 	 "\n\tClients registered: " << numberOfClients <<
-		         "\n\tLinked tour: \n";
-	tour->print();
 	if (status == bookingStatus::ongoing) {
 		std::cout << "\tBooking status: ongoing";
 	}
 	else {
 		std::cout << "\tBooking status: finished";
 	}
+	std::cout << "\n\tBooking date: " << bookingDate <<
+			 	 "\n\tClients registered: " << numberOfClients <<
+		         "\n\tLinked tour: \n";
+	std::cout << "\t\tName: " << tour->getName() <<
+		"\n\t\tDuration: " << tour->getDuration() <<
+		"\n\t\tPrice: " << tour->getPrice() <<
+		"\n\t\tRoute: " << tour->getRoute() <<
+		"\n\t\tDescription: " << tour->getDescription();
 }
