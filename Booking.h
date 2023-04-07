@@ -15,11 +15,11 @@ private:
 	bookingStatus status;
 public:
 	Booking(const char* bDate, int numOfCl, Tour* tr);
-	~Booking();
+	~Booking(void);
 
 	// Getters
-	char* getBookingDate();
-	int getNumberOfClients();
+	char* getBookingDate(void);
+	int getNumberOfClients(void);
 	Tour* getTour();
 
 	//Setters
@@ -27,6 +27,6 @@ public:
 	void setNumberOfClients(int numOfCl);
 	void setTour(Tour* tr);
 
-	void print();
+	void print(void);
 };
 

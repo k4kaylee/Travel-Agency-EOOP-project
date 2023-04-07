@@ -9,7 +9,7 @@ private:
 	char* description;
 public:
 	Tour(const char* nm, const char* drtn, float prc, const char* rt, const char* strtDt, const char* dscrptn);
-	~Tour();
+	~Tour(void);
 
 	void setName(const char* nm);
 	void setDuration(const char* drtn);
@@ -18,12 +18,12 @@ public:
 	void setDescription(const char* dscrptn);
 	void setStartDate(const char* strtDt);
 
-	char* getName() { return name; };
-	char* getDuration() { return duration; };
-	float getPrice() { return price; };
-	char* getRoute() { return route; };
-	char* getDescription() { return description; };
-	char* getStartDate() { return startDate; };
+	char* getName(void) { return name; };
+	char* getDuration(void) { return duration; };
+	float getPrice(void) { return price; };
+	char* getRoute(void) { return route; };
+	char* getDescription(void) { return description; };
+	char* getStartDate(void) { return startDate; };
 	
 	void print();
 };

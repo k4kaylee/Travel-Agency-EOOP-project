@@ -12,10 +12,10 @@ private:
 	List<Client>* listOfClients;
 public:
 	TravelAgency(List<Tour>* lOt, List<Client>* lOc);
-	~TravelAgency();
+	~TravelAgency(void);
 
-	List<Tour>* getTourList() { return  listOfTours; };
-	List<Client>* getClientList() { return listOfClients; };
+	List<Tour>* getTourList(void) { return  listOfTours; };
+	List<Client>* getClientList(void) { return listOfClients; };
 	void setTourList(List<Tour>* lOt);
 	void setClientList(List<Client>* cOl);
 

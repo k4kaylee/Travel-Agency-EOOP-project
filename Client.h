@@ -16,10 +16,10 @@ public:
     ~Client();
 
     // Getters
-    char* getName();
-    char* getLastName();
-    char* getPhoneNumber();
-    char* getEmail();
+    char* getName(void);
+    char* getLastName(void);
+    char* getPhoneNumber(void);
+    char* getEmail(void);
 
     // Setters
     void setName(const char* n);
@@ -27,6 +27,6 @@ public:
     void setPhoneNumber(const char* n);
     void setEmail(const char* n);
     void book(Tour* tr, int numOfCl = 1);
-    void print();
+    void print(void);
 };
 

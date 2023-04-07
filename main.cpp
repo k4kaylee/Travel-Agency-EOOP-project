@@ -1,6 +1,6 @@
 #include "TravelAgency.h"
 #include "List.h"
-
+#include "Console.hpp"
 
 int main() {
 	Client* client1 = new Client("Nikolai", "Borutko", "+124134674122", "10256381@wxample.com");
@@ -72,8 +72,8 @@ int main() {
 	agency->getClientList()->add(client5);
 	//agency->getClientList()->print();
 
-
-	
+	Engine terminal;
+	terminal.run();
 
 	return 0;
 }
