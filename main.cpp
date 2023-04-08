@@ -5,7 +5,7 @@
 int main() {
 	List<Tour>* listOfTours = new List<Tour>;
 	List<Client>* listOfClients = new List<Client>;
-	TravelAgency* agency = new TravelAgency(listOfTours, listOfClients);
-	Engine terminal(agency);
+	agency = new TravelAgency(listOfTours, listOfClients);
+	Engine terminal;
 	return 0;
 }

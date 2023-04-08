@@ -90,6 +90,9 @@ public:
 			}
 			std::cout << "\n\n";
 		}
+		else {
+			std::cout << "Selected list is empty\n";
+		}
 	};
 
 	void free() { 

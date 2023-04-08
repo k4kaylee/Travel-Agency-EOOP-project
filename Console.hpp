@@ -11,6 +11,8 @@
 #include "Tour.h"
 
 
+TravelAgency* agency;
+
 enum Command {
 	EXIT = 0,
 	HELP = 1,
@@ -27,8 +29,8 @@ std::unordered_map<std::string, int> commandMap{
 	{"runalltests", RUNTESTS},
 	{"addnewclient", ADDCLIENT},
 	{"addnewtour", ADDTOUR},
-	{"showClientList", SHOWCLIENTS},
-	{"showTourList", SHOWTOURS}
+	{"showclientlist", SHOWCLIENTS},
+	{"showtourlist", SHOWTOURS}
 };
 
 void clear() {
@@ -45,9 +47,8 @@ void clear() {
 
 class Engine {
 	std::vector<std::string> command;
-	TravelAgency* agency;
 public:
-	Engine(TravelAgency* tAgency);
+	Engine();
 	std::vector<std::string> getCommand();
 	void run();
 };
@@ -65,9 +66,12 @@ std::vector<std::string> Engine::getCommand() {
 		vec.push_back(word);
 	}
 
-	for (char& letter : vec[0]) {
-		letter = std::tolower(letter);
+	if (!vec.empty()) {
+		for (char& letter : vec[0]) {
+			letter = std::tolower(letter);
+		}
 	}
+
 	return vec;
 }
 
@@ -77,6 +81,7 @@ std::vector<std::string> Engine::getCommand() {
 void help() {
 	std::cout << "Commands:\n";
 	std::cout << "'runalltests' - simply observe all possible tests done automatically. No other interactions needed.\n";
+	std::cout << "'showclientlist' - prints list of clients at its current state.\n";
 	std::cout << "'addnewclient <clientName> <clientLastName> <clientPhoneNumber> <clientEmail>' - add new Client to Travel Agency client base.\n";
 	std::cout << "'addnewtour <tourName> <tourDuration> <price> <startDate>' - add new Tour to Travel Agency tour list.\n";
 }
@@ -166,11 +171,17 @@ void addNewClient(std::vector<std::string> command) {
 			return;
 		}
 		Client* client = new Client(command[1].c_str(), command[2].c_str(), command[3].c_str(), command[4].c_str());
+		agency->getClientList()->add(client);
 		client->print();
 		return;
 	}
 	std::cout << "ERROR: not enough arguments.\n\nFrom '--help':\naddnewclient <clientName> <clientLastName> <clientPhoneNumber> <clientEmail>' - add new Client to Travel Agency client base.\n\n";
 	return;
+}
+
+void showClientList() {
+	std::cout << "Current version of Client List:\n\n";
+	agency->getClientList()->print();
 }
 
 void Engine::run() {
@@ -191,6 +202,14 @@ void Engine::run() {
 			case ADDCLIENT:
 				addNewClient(command);
 				break;
+			case ADDTOUR:
+				//addNewTour();
+				break;
+			case SHOWCLIENTS:
+				showClientList();
+				break;
+			case SHOWTOURS:
+				break;
 			default:
 				std::cout << "'" << command[0] << "' is not recognised as an existing command.\nUse '--help' to check the list of available commands.\n";
 			}
@@ -202,8 +221,7 @@ void Engine::run() {
 	}
 }
 
-Engine::Engine(TravelAgency* tAgency) {
+Engine::Engine() {
 	std::cout << "Welcome to Travel Agency|EOOP project!\nIf you are new to the console, run '--help'\n";
-	agency = tAgency;
 	run();
 }
