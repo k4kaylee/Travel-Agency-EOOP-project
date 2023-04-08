@@ -5,7 +5,10 @@
 #include <vector>
 #include <sstream>
 #include <unordered_map>
-
+#include <regex>
+#include "TravelAgency.h"
+#include "Client.h"
+#include "Tour.h"
 
 
 enum Command {
@@ -13,7 +16,9 @@ enum Command {
 	HELP = 1,
 	RUNTESTS = 2,
 	ADDCLIENT = 3,
-	ADDTOUR = 4
+	ADDTOUR = 4,
+	SHOWCLIENTS = 5,
+	SHOWTOURS = 6
 };
 
 std::unordered_map<std::string, int> commandMap{
@@ -21,7 +26,9 @@ std::unordered_map<std::string, int> commandMap{
 	{"--help", HELP},	
 	{"runalltests", RUNTESTS},
 	{"addnewclient", ADDCLIENT},
-	{"addnewtour", ADDTOUR}
+	{"addnewtour", ADDTOUR},
+	{"showClientList", SHOWCLIENTS},
+	{"showTourList", SHOWTOURS}
 };
 
 void clear() {
@@ -38,8 +45,9 @@ void clear() {
 
 class Engine {
 	std::vector<std::string> command;
+	TravelAgency* agency;
 public:
-	Engine();
+	Engine(TravelAgency* tAgency);
 	std::vector<std::string> getCommand();
 	void run();
 };
@@ -48,9 +56,6 @@ std::vector<std::string> Engine::getCommand() {
 	std::string input;
 	std::cout << "\n>>";
 	std::getline(std::cin, input);
-	for (char& letter : input) {
-		letter = std::tolower(letter);
-	}
 
 	std::vector<std::string> vec;
 	std::stringstream stream(input);
@@ -58,6 +63,10 @@ std::vector<std::string> Engine::getCommand() {
 	std::string word;
 	while (stream >> word) {
 		vec.push_back(word);
+	}
+
+	for (char& letter : vec[0]) {
+		letter = std::tolower(letter);
 	}
 	return vec;
 }
@@ -144,7 +153,23 @@ void runTests() {
 
 }
 
-void addNewClient() {
+void addNewClient(std::vector<std::string> command) {
+	if (command.size() >= 5) {
+		const std::regex email("(\\w+)(\\.|_)?(\\w*)@(\\w+)(\\.(\\w+))+");
+		std::regex phone("^\\+?[0-9]{1,3}-?[0-9]{3,}-?[0-9]{4,}$");
+		if (!std::regex_match(command[3], phone)) {
+			std::cerr << "ERROR: '" << command[3] << "' - incorrect phone input\n";
+			return;
+		}
+		if (!std::regex_match(command[4], email)) {
+			std::cerr << "ERROR: '" << command[4] << "' - incorrect email input\n";
+			return;
+		}
+		Client* client = new Client(command[1].c_str(), command[2].c_str(), command[3].c_str(), command[4].c_str());
+		client->print();
+		return;
+	}
+	std::cout << "ERROR: not enough arguments.\n\nFrom '--help':\naddnewclient <clientName> <clientLastName> <clientPhoneNumber> <clientEmail>' - add new Client to Travel Agency client base.\n\n";
 	return;
 }
 
@@ -164,7 +189,7 @@ void Engine::run() {
 				runTests();
 				break;
 			case ADDCLIENT:
-				addNewClient();
+				addNewClient(command);
 				break;
 			default:
 				std::cout << "'" << command[0] << "' is not recognised as an existing command.\nUse '--help' to check the list of available commands.\n";
@@ -177,7 +202,8 @@ void Engine::run() {
 	}
 }
 
-Engine::Engine() {
+Engine::Engine(TravelAgency* tAgency) {
 	std::cout << "Welcome to Travel Agency|EOOP project!\nIf you are new to the console, run '--help'\n";
+	agency = tAgency;
 	run();
 }

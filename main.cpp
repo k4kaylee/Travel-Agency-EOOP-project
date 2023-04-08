@@ -3,6 +3,9 @@
 #include "Console.hpp"
 
 int main() {
-	Engine terminal;
+	List<Tour>* listOfTours = new List<Tour>;
+	List<Client>* listOfClients = new List<Client>;
+	TravelAgency* agency = new TravelAgency(listOfTours, listOfClients);
+	Engine terminal(agency);
 	return 0;
 }

@@ -18,6 +18,5 @@ public:
 	List<Client>* getClientList(void) { return listOfClients; };
 	void setTourList(List<Tour>* lOt);
 	void setClientList(List<Client>* cOl);
-
 };
 

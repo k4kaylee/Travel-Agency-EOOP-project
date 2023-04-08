@@ -18,4 +18,3 @@ void TravelAgency::setTourList(List<Tour>* lOt) {
 void TravelAgency::setClientList(List<Client>* lOc) {
 	listOfClients = lOc;
 }
-
