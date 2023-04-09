@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #include <iostream>
 #include <string>
 #include <cctype>
@@ -72,7 +72,7 @@ std::vector<std::string> Engine::getCommand() {
 		}
 	}
 
-	return vec;
+	return vec;  
 }
 
 
@@ -101,44 +101,44 @@ void runTests() {
 
 
 	Tour* tour1 = new Tour("Hawaii Paradise",
-		"7 days",
 		2500.0,
 		"Honolulu to Maui",
 		"21.05.2023",
+		"23.05.2023",
 		"Experience the best of Hawaii with this 7-day tour that takes you\
 \nfrom Honolulu to Maui. Enjoy stunning beaches, tropical rainforests,\
 \nsand breathtaking landscapes.\n");
 
 	Tour* tour2 = new Tour("European Adventure",
-		"14 days",
 		4500.0,
 		"Paris to Barcelona",
 		"15.02.2021",
+		"26.02.2021",
 		"Embark on a 14-day adventure through Europe, starting in Paris and\
 \nending in Barcelona. Discover the beauty of the continent with this\
 \nexciting tour that covers 6 different countries.\n");
 
 	Tour* tour3 = new Tour("African Safari",
-		"10 days",
 		3500.0,
 		"Kenya to Tanzania",
 		"21.02.2024",
+		"23.03.2024",
 		"Experience the ultimate adventure with this 10-day safari tour\
 \nthat takes you through the heart of Kenya and Tanzania. Get up close\
 \nand personal with some of Africa's most majestic wildlife.\n");
 
 	Tour* tour4 = new Tour("Paris Tour",
-		"4 days",
 		1200.0,
 		"Eiffel Tower, Notre-Dame Cathedral, The Louvre",
 		"01.07.2023",
+		"05.07.2023",
 		"Experience the culture and beauty of Paris in this four-day tour.\n");
 
 	Tour* tour5 = new Tour("Australia Tour",
-		"10 days",
 		3500.0,
 		"Sydney Opera House, Great Barrier Reef, Uluru",
 		"30.08.2023",
+		"10..09.2023",
 		"Explore the stunning natural wonders and iconic landmarks\
 \nof Australia in this ten-day tour.\n");
 
@@ -161,7 +161,7 @@ void runTests() {
 void addNewClient(std::vector<std::string> command) {
 	if (command.size() >= 5) {
 		const std::regex email("(\\w+)(\\.|_)?(\\w*)@(\\w+)(\\.(\\w+))+");
-		std::regex phone("^\\+?[0-9]{1,3}-?[0-9]{3,}-?[0-9]{4,}$");
+		const std::regex phone("^\\+?[0-9]{1,3}-?[0-9]{3,}-?[0-9]{4,}$");
 		if (!std::regex_match(command[3], phone)) {
 			std::cerr << "ERROR: '" << command[3] << "' - incorrect phone input\n";
 			return;
@@ -176,6 +176,24 @@ void addNewClient(std::vector<std::string> command) {
 		return;
 	}
 	std::cout << "ERROR: not enough arguments.\n\nFrom '--help':\naddnewclient <clientName> <clientLastName> <clientPhoneNumber> <clientEmail>' - add new Client to Travel Agency client base.\n\n";
+	return;
+}
+
+void addNewTour(std::vector<std::string> command) {
+	if (command.size() >= 5) {
+		std::regex duration(R"(^(?:0[1-9]|[12][0-9]|3[01])\.(?:0[1-9]|1[0-2])\.\d{4}-\d{2}\.(?:0[1-9]|1[0-2])\.\d{4}(?<=-\d{2}\.\d{2}\.\d{4})(?=(?:\d{2}\.\d{2}\.\d{4}|(0[1-9]|[12][0-9]|3[01])\.(0[1-9]|1[0-2])\.\d{4}))$)");
+		try {
+			if (!std::regex_match(command[2], duration)) {
+				std::cerr << "ERROR: '" << command[2] << "' - incorrect data input.\nProper format: 'DD.MM.YYYY - DD.MM.YYYY. Note that\nsecond date must be later than the first one.";
+				return;
+			}
+		}
+		catch (const std::regex_error& e) {
+			std::cerr << "Regex error: " << e.what() << '\n';
+			return;
+		}
+	}
+	std::cout << "ERROR: not enough arguments.\n\nFrom '--help':\naddnewtour <tourName> <tourDuration> <price> <startDate>' - add new Tour to Travel Agency tour list.\n\n";
 	return;
 }
 
@@ -203,7 +221,7 @@ void Engine::run() {
 				addNewClient(command);
 				break;
 			case ADDTOUR:
-				//addNewTour();
+				addNewTour(command);
 				break;
 			case SHOWCLIENTS:
 				showClientList();

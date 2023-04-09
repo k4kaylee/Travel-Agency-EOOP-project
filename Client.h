@@ -14,7 +14,7 @@ private:
 public:
     Client(const char* n, const char* ln, const char* ph, const char* e, List<Booking>* lOb = new List<Booking>);
     ~Client();
-
+    
     // Getters
     char* getName(void);
     char* getLastName(void);
