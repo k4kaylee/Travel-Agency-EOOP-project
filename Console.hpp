@@ -6,6 +6,8 @@
 #include <sstream>
 #include <unordered_map>
 #include <regex>
+#include <ctime>
+#include <iomanip>
 #include "TravelAgency.h"
 #include "Client.h"
 #include "Tour.h"
@@ -83,7 +85,7 @@ void help() {
 	std::cout << "'runalltests' - simply observe all possible tests done automatically. No other interactions needed.\n";
 	std::cout << "'showclientlist' - prints list of clients at its current state.\n";
 	std::cout << "'addnewclient <clientName> <clientLastName> <clientPhoneNumber> <clientEmail>' - add new Client to Travel Agency client base.\n";
-	std::cout << "'addnewtour <tourName> <tourDuration> <price> <startDate>' - add new Tour to Travel Agency tour list.\n";
+	std::cout << "'addnewtour <tourName> <price> <route> <startDate> <finishDate>' - add new Tour to Travel Agency tour list.\n";
 }
 
 void runTests() {
@@ -179,21 +181,40 @@ void addNewClient(std::vector<std::string> command) {
 	return;
 }
 
+bool compareDate(std::string date1, std::string date2) {
+	tm tm1 = {};
+	std::istringstream ss1(date1);
+	ss1 >> std::get_time(&tm1, "%d.%m.%Y");
+	time_t time1 = mktime(&tm1);
+
+	tm tm2 = {};
+	std::istringstream ss2(date2);
+	ss2 >> std::get_time(&tm2, "%d.%m.%Y");
+	time_t time2 = mktime(&tm2);
+
+	return difftime(time1, time2) < 0;
+}
+//addnewtour paris 22 22.01.2000 22.01.1999
 void addNewTour(std::vector<std::string> command) {
 	if (command.size() >= 5) {
-		std::regex duration(R"(^(?:0[1-9]|[12][0-9]|3[01])\.(?:0[1-9]|1[0-2])\.\d{4}-\d{2}\.(?:0[1-9]|1[0-2])\.\d{4}(?<=-\d{2}\.\d{2}\.\d{4})(?=(?:\d{2}\.\d{2}\.\d{4}|(0[1-9]|[12][0-9]|3[01])\.(0[1-9]|1[0-2])\.\d{4}))$)");
-		try {
-			if (!std::regex_match(command[2], duration)) {
-				std::cerr << "ERROR: '" << command[2] << "' - incorrect data input.\nProper format: 'DD.MM.YYYY - DD.MM.YYYY. Note that\nsecond date must be later than the first one.";
+		const std::regex date("^(?:(?:31(\\/|-|\\.)(?:0?[13578]|1[02]))\\1|(?:(?:29|30)(\\/|-|\\.)(?:0?[13-9]|1[0-2])\\2))(?:(?:1[6-9]|[2-9]\\d)?\\d{2})$|^(?:29(\\/|-|\\.)0?2\\3(?:(?:(?:1[6-9]|[2-9]\\d)?(?:0[48]|[2468][048]|[13579][26])|(?:(?:16|[2468][048]|[3579][26])00))))$|^(?:0?[1-9]|1\\d|2[0-8])(\\/|-|\\.)(?:(?:0?[1-9])|(?:1[0-2]))\\4(?:(?:1[6-9]|[2-9]\\d)?\\d{2})$");
+			if (!std::regex_match(command[4], date)) {
+				std::cerr << "ERROR: '" << command[4] << "' - incorrect data input.\nProper format: 'DD.MM.YYYY'.";
 				return;
 			}
-		}
-		catch (const std::regex_error& e) {
-			std::cerr << "Regex error: " << e.what() << '\n';
-			return;
-		}
+			else if (!std::regex_match(command[5], date)) {
+				std::cerr << "ERROR: '" << command[5] << "' - incorrect data input.\nProper format: 'DD.MM.YYYY'.";
+				return;
+			}
+			else if(!compareDate(command[4], command[5])){
+				std::cerr << "ERROR: '" << command[5] << "' is before '" << command[4] << "'.";
+				return;
+			}
+			std::string description;
+
+			//Tour* tour = new Tour(command[1].c_str(), std::stof(command[2]), command[3].c_str(), command[4].c_str(), command[5].c_str(), description.c_str());
 	}
-	std::cout << "ERROR: not enough arguments.\n\nFrom '--help':\naddnewtour <tourName> <tourDuration> <price> <startDate>' - add new Tour to Travel Agency tour list.\n\n";
+	std::cout << "ERROR: not enough arguments.\n\nFrom '--help':\naddnewtour <tourName> <price> <route> <startDate> <finishDate>' - add new Tour to Travel Agency tour list.\n\n";
 	return;
 }
 
