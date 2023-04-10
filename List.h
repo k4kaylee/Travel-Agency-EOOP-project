@@ -23,6 +23,15 @@ public:
 	
 	Item* getHead() { return head; };
 
+	bool find(T* item) {
+		for (Item* temp = head; temp != nullptr; temp = temp->next) {
+			if (strcmp(temp->ptr->getName(), item->getName()) == 0) {
+				return true;
+			}
+			return false;
+		}
+	};
+
 	void add(Client* itemPtr) {
 		Item* newItem = new Item;
 		newItem->ptr = itemPtr;

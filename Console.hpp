@@ -28,7 +28,7 @@ enum Command {
 
 std::unordered_map<std::string, int> commandMap{
 	{"exit", EXIT},
-	{"--help", HELP},	
+	{"--help", HELP},
 	{"runalltests", RUNTESTS},
 	{"addnewclient", ADDCLIENT},
 	{"addnewtour", ADDTOUR},
@@ -75,7 +75,7 @@ std::vector<std::string> Engine::getCommand() {
 		}
 	}
 
-	return vec;  
+	return vec;
 }
 
 std::string getDescription() {
@@ -177,6 +177,10 @@ void addNewClient(std::vector<std::string> command) {
 			return;
 		}
 		Client* client = new Client(command[1].c_str(), command[2].c_str(), command[3].c_str(), command[4].c_str());
+		if (agency->getClientList()->find(client)) {
+			std::cerr << "ERROR: cliemt '" << command[1] << "' already exists.";
+			return;
+		}
 		agency->getClientList()->add(client);
 		client->print();
 		return;
@@ -218,8 +222,8 @@ bool compareDate(std::string date1, std::string date2) {
 void addNewTour(std::vector<std::string> command) {
 	if (command.size() >= 5) {
 		const std::regex date("^(?:(?:31(\\/|-|\\.)(?:0?[13578]|1[02]))\\1|(?:(?:29|30)(\\/|-|\\.)(?:0?[13-9]|1[0-2])\\2))(?:(?:1[6-9]|[2-9]\\d)?\\d{2})$|^(?:29(\\/|-|\\.)0?2\\3(?:(?:(?:1[6-9]|[2-9]\\d)?(?:0[48]|[2468][048]|[13579][26])|(?:(?:16|[2468][048]|[3579][26])00))))$|^(?:0?[1-9]|1\\d|2[0-8])(\\/|-|\\.)(?:(?:0?[1-9])|(?:1[0-2]))\\4(?:(?:1[6-9]|[2-9]\\d)?\\d{2})$");
-	
-		
+
+
 
 		if (!std::regex_match(command[3], date)) {
 			std::cerr << "ERROR: '" << command[3] << "' - incorrect data input.\nProper format: 'DD.MM.YYYY'.";
@@ -233,12 +237,16 @@ void addNewTour(std::vector<std::string> command) {
 			std::cerr << "ERROR: '" << command[4] << "' - incorrect data input.\nProper format: 'DD.MM.YYYY'.";
 			return;
 		}
-		else if(!compareDate(command[3], command[4])){
+		else if (!compareDate(command[3], command[4])) {
 			std::cerr << "ERROR: '" << command[4] << "' is before '" << command[3] << "'.";
 			return;
 		}
-		
+
 		Tour* tour = new Tour(command[1].c_str(), std::stof(command[2]), command[3].c_str(), command[4].c_str(), getDescription().c_str());
+		if (agency->getTourList()->find(tour)) {
+			std::cerr << "ERROR: tour '" << command[1] << "' already exists.";
+			return;
+		}
 		agency->getTourList()->add(tour);
 		tour->print();
 		return;
