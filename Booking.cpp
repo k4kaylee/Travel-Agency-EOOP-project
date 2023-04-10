@@ -47,8 +47,8 @@ void Booking::print() {
 			 	 "\n\tClients registered: " << numberOfClients <<
 		         "\n\tLinked tour: \n";
 	std::cout << "\t\tName: " << tour->getName() <<
-		"\n\t\tDuration: " << tour->getDuration() <<
 		"\n\t\tPrice: " << tour->getPrice() <<
-		"\n\t\tRoute: " << tour->getRoute() <<
+		"\n\t\tStart date: " << tour->getStartDate() <<
+		"\n\t\tFinish date: " << tour->getFinishDate() <<
 		"\n\t\tDescription: " << tour->getDescription();
 }

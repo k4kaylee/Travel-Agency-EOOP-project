@@ -7,6 +7,7 @@
 #include <unordered_map>
 #include <regex>
 #include <ctime>
+#include <chrono>
 #include <iomanip>
 #include "TravelAgency.h"
 #include "Client.h"
@@ -77,15 +78,23 @@ std::vector<std::string> Engine::getCommand() {
 	return vec;  
 }
 
-
+std::string getDescription() {
+	clear();
+	std::cout << "Description: ";
+	std::string description;
+	std::getline(std::cin, description);
+	clear();
+	return description;
+}
 
 
 void help() {
 	std::cout << "Commands:\n";
 	std::cout << "'runalltests' - simply observe all possible tests done automatically. No other interactions needed.\n";
 	std::cout << "'showclientlist' - prints list of clients at its current state.\n";
+	std::cout << "'showtourlist' - prints list of tours at its current state.\n";
 	std::cout << "'addnewclient <clientName> <clientLastName> <clientPhoneNumber> <clientEmail>' - add new Client to Travel Agency client base.\n";
-	std::cout << "'addnewtour <tourName> <price> <route> <startDate> <finishDate>' - add new Tour to Travel Agency tour list.\n";
+	std::cout << "'addnewtour <tourName> <price> <startDate> <finishDate>' - add new Tour to Travel Agency tour list.\n";
 }
 
 void runTests() {
@@ -104,7 +113,6 @@ void runTests() {
 
 	Tour* tour1 = new Tour("Hawaii Paradise",
 		2500.0,
-		"Honolulu to Maui",
 		"21.05.2023",
 		"23.05.2023",
 		"Experience the best of Hawaii with this 7-day tour that takes you\
@@ -113,7 +121,6 @@ void runTests() {
 
 	Tour* tour2 = new Tour("European Adventure",
 		4500.0,
-		"Paris to Barcelona",
 		"15.02.2021",
 		"26.02.2021",
 		"Embark on a 14-day adventure through Europe, starting in Paris and\
@@ -122,7 +129,6 @@ void runTests() {
 
 	Tour* tour3 = new Tour("African Safari",
 		3500.0,
-		"Kenya to Tanzania",
 		"21.02.2024",
 		"23.03.2024",
 		"Experience the ultimate adventure with this 10-day safari tour\
@@ -131,14 +137,12 @@ void runTests() {
 
 	Tour* tour4 = new Tour("Paris Tour",
 		1200.0,
-		"Eiffel Tower, Notre-Dame Cathedral, The Louvre",
 		"01.07.2023",
 		"05.07.2023",
 		"Experience the culture and beauty of Paris in this four-day tour.\n");
 
 	Tour* tour5 = new Tour("Australia Tour",
 		3500.0,
-		"Sydney Opera House, Great Barrier Reef, Uluru",
 		"30.08.2023",
 		"10..09.2023",
 		"Explore the stunning natural wonders and iconic landmarks\
@@ -181,6 +185,22 @@ void addNewClient(std::vector<std::string> command) {
 	return;
 }
 
+std::string getCurrentDate() {
+	auto now = std::chrono::system_clock::now();
+	auto time = std::chrono::system_clock::to_time_t(now);
+
+	std::stringstream ss;
+
+	struct tm* timeinfo;
+	timeinfo = localtime(&time);
+
+	ss << std::setfill('0') << std::setw(2) << timeinfo->tm_mday << "."
+		<< std::setfill('0') << std::setw(2) << timeinfo->tm_mon + 1 << "."
+		<< std::setw(4) << timeinfo->tm_year + 1900;
+
+	return ss.str();
+}
+
 bool compareDate(std::string date1, std::string date2) {
 	tm tm1 = {};
 	std::istringstream ss1(date1);
@@ -194,33 +214,47 @@ bool compareDate(std::string date1, std::string date2) {
 
 	return difftime(time1, time2) < 0;
 }
-//addnewtour paris 22 22.01.2000 22.01.1999
+
 void addNewTour(std::vector<std::string> command) {
 	if (command.size() >= 5) {
 		const std::regex date("^(?:(?:31(\\/|-|\\.)(?:0?[13578]|1[02]))\\1|(?:(?:29|30)(\\/|-|\\.)(?:0?[13-9]|1[0-2])\\2))(?:(?:1[6-9]|[2-9]\\d)?\\d{2})$|^(?:29(\\/|-|\\.)0?2\\3(?:(?:(?:1[6-9]|[2-9]\\d)?(?:0[48]|[2468][048]|[13579][26])|(?:(?:16|[2468][048]|[3579][26])00))))$|^(?:0?[1-9]|1\\d|2[0-8])(\\/|-|\\.)(?:(?:0?[1-9])|(?:1[0-2]))\\4(?:(?:1[6-9]|[2-9]\\d)?\\d{2})$");
-			if (!std::regex_match(command[4], date)) {
-				std::cerr << "ERROR: '" << command[4] << "' - incorrect data input.\nProper format: 'DD.MM.YYYY'.";
-				return;
-			}
-			else if (!std::regex_match(command[5], date)) {
-				std::cerr << "ERROR: '" << command[5] << "' - incorrect data input.\nProper format: 'DD.MM.YYYY'.";
-				return;
-			}
-			else if(!compareDate(command[4], command[5])){
-				std::cerr << "ERROR: '" << command[5] << "' is before '" << command[4] << "'.";
-				return;
-			}
-			std::string description;
+	
+		
 
-			//Tour* tour = new Tour(command[1].c_str(), std::stof(command[2]), command[3].c_str(), command[4].c_str(), command[5].c_str(), description.c_str());
+		if (!std::regex_match(command[3], date)) {
+			std::cerr << "ERROR: '" << command[3] << "' - incorrect data input.\nProper format: 'DD.MM.YYYY'.";
+			return;
+		}
+		else if (compareDate(command[3], getCurrentDate())) {
+			std::cerr << "ERROR: '" << command[3] << "' is before current date (" << getCurrentDate() << ").";
+			return;
+		}
+		else if (!std::regex_match(command[4], date)) {
+			std::cerr << "ERROR: '" << command[4] << "' - incorrect data input.\nProper format: 'DD.MM.YYYY'.";
+			return;
+		}
+		else if(!compareDate(command[3], command[4])){
+			std::cerr << "ERROR: '" << command[4] << "' is before '" << command[3] << "'.";
+			return;
+		}
+		
+		Tour* tour = new Tour(command[1].c_str(), std::stof(command[2]), command[3].c_str(), command[4].c_str(), getDescription().c_str());
+		agency->getTourList()->add(tour);
+		tour->print();
+		return;
 	}
-	std::cout << "ERROR: not enough arguments.\n\nFrom '--help':\naddnewtour <tourName> <price> <route> <startDate> <finishDate>' - add new Tour to Travel Agency tour list.\n\n";
+	std::cout << "ERROR: not enough arguments.\n\nFrom '--help':\naddnewtour <tourName> <price> <startDate> <finishDate>' - add new Tour to Travel Agency tour list.\n\n";
 	return;
 }
 
 void showClientList() {
 	std::cout << "Current version of Client List:\n\n";
 	agency->getClientList()->print();
+}
+
+void showTourList() {
+	std::cout << "Current version of tour list: \n";
+	agency->getTourList()->print();
 }
 
 void Engine::run() {
@@ -248,6 +282,7 @@ void Engine::run() {
 				showClientList();
 				break;
 			case SHOWTOURS:
+				showTourList();
 				break;
 			default:
 				std::cout << "'" << command[0] << "' is not recognised as an existing command.\nUse '--help' to check the list of available commands.\n";

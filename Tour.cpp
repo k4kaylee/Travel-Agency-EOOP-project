@@ -4,10 +4,9 @@
 #include <iostream>
 
 
-Tour::Tour(const char* nm, float prc, const char* rt, const char* strtDt, const char* fnshDt, const char* dscrptn) {
+Tour::Tour(const char* nm, float prc, const char* strtDt, const char* fnshDt, const char* dscrptn) {
 	setName(nm);
 	setPrice(prc);
-	setRoute(rt);
 	setDescription(dscrptn);
 	setStartDate(strtDt);
 	setFinishDate(fnshDt);
@@ -17,7 +16,6 @@ Tour::~Tour() {
 	delete[] name;
 	delete[] finishDate;
 	delete[] startDate;
-	delete[] route;
 	delete[] description;
 }
 
@@ -37,12 +35,6 @@ void Tour::setPrice(float prc) {
 	price = prc;
 }
 
-void Tour::setRoute(const char* rt) {
-	delete[] route;
-	route = new char[strlen(rt) + 1];
-	strcpy(route, rt);
-}
-
 void Tour::setStartDate(const char* strtDt) {
 	delete[] startDate;
 	startDate = new char[strlen(strtDt) + 1];
@@ -56,10 +48,9 @@ void Tour::setDescription(const char* dscrptn) {
 }
 
 void Tour::print() {
-	std::cout << "\nName: " << name <<
+	std::cout << "Name: " << name <<
 		"\nPrice: " << price <<
-		"\nRoute: " << route <<
-		"\nStartt date: " << startDate <<
+		"\nStart date: " << startDate <<
 		"\nFinish date: " << finishDate <<
-		"\nDescription: " << description << std::endl;
+		"\nDescription: " << description << "\n\n";
 }

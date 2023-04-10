@@ -1,3 +1,4 @@
+#define _CRT_SECURE_NO_WARNINGS
 #include "TravelAgency.h"
 #include "List.h"
 #include "Console.hpp"
