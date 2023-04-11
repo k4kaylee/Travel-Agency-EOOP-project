@@ -99,7 +99,7 @@ void help() {
 	std::cout << "'showtourlist' - prints list of tours at its current state.\n";
 	std::cout << "'addnewclient <clientName> <clientLastName> <clientPhoneNumber> <clientEmail>' - add new Client to Travel Agency client base.\n";
 	std::cout << "'addnewtour <tourName> <price> <startDate> <finishDate>' - add new Tour to Travel Agency tour list.\n";
-	std::cout << "'search <option>' - runs search engine to find client or tour. <option> may be equal to 'tour' or 'client'.\n";
+	std::cout << "'search <option>' - runs search engine to find client or tour.\n\t\t<option> may be equal to 'tour' or 'client'.\n\t\tNOTE: to exit search, press ESC.\n";
 }
 
 void runTests() {
@@ -273,39 +273,55 @@ void showTourList() {
 void search(std::vector<std::string> command) {
 	if (command.size() >= 2) {
 		char letter;
-		std::string ListDemo = "ListDemo\nListDemo\nListDemo\nListDemo\nListDemo ";
-
+		std::string ListDemo = "ListDemo\nBanana\nApple\nMakintosh\nSumakin";
 		std::string search;
+		std::string storage;
 		gotoxy(0, 3);
-		std::cout << ListDemo;
+
+		storage = ListDemo;
+		std::cout << storage;
 		while (true) {
+			if (search.empty()) {
+				gotoxy(0, 3);
+				std::cout << ListDemo;
+			}
 			gotoxy(search.length() + 1, 0);
 
 			letter = _getch();
-			gotoxy(0, 3);
+			
+			if (letter == 27) {
+				clear();
+				std::cout << "What do you want me to do?\n";
+				return;
+			}
 
-			if (letter == 27) break;
 			if (letter == 8 && !search.empty()) {
+				clear();
 				search.pop_back();
+				if (search.empty()) {
+					continue;
+				}
+				gotoxy(0, 3);
+				std::string highlighted;
+				for (size_t pos = 0; pos < ListDemo.length(); pos++) {
+					if (ListDemo.substr(pos, search.length()) == search) {
+						// Если подстрока совпадает с search, то выделяем ее красным цветом
+						highlighted += "\033[31m" + ListDemo.substr(pos, search.length()) + "\033[0m";
+						pos += search.length() - 1;
+					}
+					else {
+						highlighted += ListDemo[pos];
+					}
+				}
+				std::cout << highlighted;
+				gotoxy(0, 0);
+				std::cout << search;
 			}
 
 			if (isalpha(letter) || isdigit(letter) || isspace(letter)) {
 				search += letter;
 				int length = search.length();
-				gotoxy(search.length(), 0);
-
 				gotoxy(0, 3);
-				// Проходим по всем позициям в строке ListDemo и сравниваем
-				// фрагменты search с подстроками в ListDemo
-				/*size_t pos = 0;
-				while (pos < ListDemo.length()) {
-					pos = ListDemo.find(search, pos);
-					if (pos == std::string::npos) {
-
-						break;
-					}
-
-				}*/
 				std::string highlighted;
 				for (size_t pos = 0; pos < ListDemo.length(); pos++) {
 					if (ListDemo.substr(pos, search.length()) == search) {
@@ -321,6 +337,8 @@ void search(std::vector<std::string> command) {
 				gotoxy(0, 3);
 				std::cout << highlighted;
 
+				storage = highlighted;
+
 				gotoxy(0, 0);
 				std::cout << search;
 				continue;
@@ -329,8 +347,8 @@ void search(std::vector<std::string> command) {
 
 
 
-		
-	} 
+
+	}
 	std::cerr << "ERROR: not enough arguments. From '--help':\n'search <option>' - runs search engine to find client or tour. <option> may be equal to 'tour' or 'client'.\n";
 	return;
 }
