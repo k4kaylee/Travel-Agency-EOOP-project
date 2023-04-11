@@ -9,9 +9,11 @@
 #include <ctime>
 #include <chrono>
 #include <iomanip>
+#include <conio.h>
 #include "TravelAgency.h"
 #include "Client.h"
 #include "Tour.h"
+#define gotoxy(x,y) std::cout << "\033[" << y << ";" << x << "H"
 
 
 TravelAgency* agency;
@@ -23,7 +25,8 @@ enum Command {
 	ADDCLIENT = 3,
 	ADDTOUR = 4,
 	SHOWCLIENTS = 5,
-	SHOWTOURS = 6
+	SHOWTOURS = 6,
+	SEARCH = 7
 };
 
 std::unordered_map<std::string, int> commandMap{
@@ -33,7 +36,8 @@ std::unordered_map<std::string, int> commandMap{
 	{"addnewclient", ADDCLIENT},
 	{"addnewtour", ADDTOUR},
 	{"showclientlist", SHOWCLIENTS},
-	{"showtourlist", SHOWTOURS}
+	{"showtourlist", SHOWTOURS},
+	{"search", SEARCH}
 };
 
 void clear() {
@@ -95,6 +99,7 @@ void help() {
 	std::cout << "'showtourlist' - prints list of tours at its current state.\n";
 	std::cout << "'addnewclient <clientName> <clientLastName> <clientPhoneNumber> <clientEmail>' - add new Client to Travel Agency client base.\n";
 	std::cout << "'addnewtour <tourName> <price> <startDate> <finishDate>' - add new Tour to Travel Agency tour list.\n";
+	std::cout << "'search <option>' - runs search engine to find client or tour. <option> may be equal to 'tour' or 'client'.\n";
 }
 
 void runTests() {
@@ -265,6 +270,71 @@ void showTourList() {
 	agency->getTourList()->print();
 }
 
+void search(std::vector<std::string> command) {
+	if (command.size() >= 2) {
+		char letter;
+		std::string ListDemo = "ListDemo\nListDemo\nListDemo\nListDemo\nListDemo ";
+
+		std::string search;
+		gotoxy(0, 3);
+		std::cout << ListDemo;
+		while (true) {
+			gotoxy(search.length() + 1, 0);
+
+			letter = _getch();
+			gotoxy(0, 3);
+
+			if (letter == 27) break;
+			if (letter == 8 && !search.empty()) {
+				search.pop_back();
+			}
+
+			if (isalpha(letter) || isdigit(letter) || isspace(letter)) {
+				search += letter;
+				int length = search.length();
+				gotoxy(search.length(), 0);
+
+				gotoxy(0, 3);
+				// Проходим по всем позициям в строке ListDemo и сравниваем
+				// фрагменты search с подстроками в ListDemo
+				/*size_t pos = 0;
+				while (pos < ListDemo.length()) {
+					pos = ListDemo.find(search, pos);
+					if (pos == std::string::npos) {
+
+						break;
+					}
+
+				}*/
+				std::string highlighted;
+				for (size_t pos = 0; pos < ListDemo.length(); pos++) {
+					if (ListDemo.substr(pos, search.length()) == search) {
+						// Если подстрока совпадает с search, то выделяем ее красным цветом
+						highlighted += "\033[31m" + ListDemo.substr(pos, search.length()) + "\033[0m";
+						pos += search.length() - 1;
+					}
+					else {
+						highlighted += ListDemo[pos];
+					}
+				}
+				clear();
+				gotoxy(0, 3);
+				std::cout << highlighted;
+
+				gotoxy(0, 0);
+				std::cout << search;
+				continue;
+			}
+		}
+
+
+
+		
+	} 
+	std::cerr << "ERROR: not enough arguments. From '--help':\n'search <option>' - runs search engine to find client or tour. <option> may be equal to 'tour' or 'client'.\n";
+	return;
+}
+
 void Engine::run() {
 	command = getCommand();
 	while (true) {
@@ -291,6 +361,9 @@ void Engine::run() {
 				break;
 			case SHOWTOURS:
 				showTourList();
+				break;
+			case SEARCH:
+				search(command);
 				break;
 			default:
 				std::cout << "'" << command[0] << "' is not recognised as an existing command.\nUse '--help' to check the list of available commands.\n";
