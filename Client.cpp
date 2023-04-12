@@ -1,8 +1,10 @@
 #define _CRT_SECURE_NO_WARNINGS
 #include "Client.h";
+#include "List.h"
 #include <cstring>;
 #include <ctime>;
 #include <iostream>
+#include <sstream>
 
 
 Client::Client(const char* n, const char* ln, const char* ph, const char* em, List<Booking>* lOb) {
@@ -71,4 +73,18 @@ void Client::book(Tour* tr, int numOfCl) {
     std::strftime(currentTime, 20, "%Y-%m-%d %H:%M:%S", std::localtime(&now));
     Booking* newBooking = new Booking(currentTime, numOfCl, tr);
     listOfBookings->add(newBooking);
+}
+
+
+std::string Client::toString() {
+    std::stringstream ss;
+    ss << "Name: " << name << "\n";
+    ss << "Lastname: " << lastname << "\n";
+    ss << "Phone number: " << phoneNumber << "\n";
+    ss << "Email: " << email << "\n";
+    ss << "List of bookings:\n";
+    if (listOfBookings != nullptr) {
+        ss << listOfBookings->toString();
+    }
+    return ss.str();
 }

@@ -288,7 +288,7 @@ void search(std::vector<std::string> command) {
 			gotoxy(search.length() + 1, 0);
 
 			letter = _getch();
-			
+
 			if (letter == 27) {
 				clear();
 				std::cout << "What do you want me to do?\n";
@@ -323,21 +323,9 @@ void search(std::vector<std::string> command) {
 				int length = search.length();
 				gotoxy(0, 3);
 				std::string highlighted;
-				for (size_t pos = 0; pos < ListDemo.length(); pos++) {
-					if (ListDemo.substr(pos, search.length()) == search) {
-						// Если подстрока совпадает с search, то выделяем ее красным цветом
-						highlighted += "\033[31m" + ListDemo.substr(pos, search.length()) + "\033[0m";
-						pos += search.length() - 1;
-					}
-					else {
-						highlighted += ListDemo[pos];
-					}
-				}
+				agency->getClientList()->search(search);
 				clear();
-				gotoxy(0, 3);
-				std::cout << highlighted;
-
-				storage = highlighted;
+				gotoxy(0, 3); 
 
 				gotoxy(0, 0);
 				std::cout << search;

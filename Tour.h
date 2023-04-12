@@ -1,4 +1,6 @@
 #pragma once
+#include <cstring>
+
 class Tour{
 private:
 	char* name;
@@ -15,13 +17,14 @@ public:
 	void setDescription(const char* dscrptn);
 	void setStartDate(const char* strtDt);
 	void setFinishDate(const char* fnshDt);
+	std::string toString(void);
 
 	char* getName(void) { return name; };
 	float getPrice(void) { return price; };
 	char* getStartDate(void) { return startDate; };
 	char* getFinishDate(void) { return finishDate; };
 	char* getDescription(void) { return description; };
-	
+
 	void print();
 };
 

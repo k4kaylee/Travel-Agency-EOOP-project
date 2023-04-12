@@ -5,7 +5,9 @@ class Tour;
 #include <cstring>
 #include <iostream>
 
-template<typename T> 
+
+
+template<typename T>
 class List {
 private:
 	struct Item {
@@ -20,7 +22,7 @@ public:
 	~List() {
 		this->free();
 	}
-	
+
 	Item* getHead() { return head; };
 
 	bool find(T* item) {
@@ -31,6 +33,8 @@ public:
 			return false;
 		}
 	};
+
+
 
 	void add(Client* itemPtr) {
 		Item* newItem = new Item;
@@ -113,6 +117,34 @@ public:
 			delete temp;
 		}
 	}
+
+
+	void search(const std::string& search) {
+		Item* curr = head;
+		while (curr != nullptr) {
+			T* value = curr->ptr;
+			std::string str = value->toString();
+			std::string highlighted;
+			size_t pos = 0;
+			while ((pos = str.find(search, pos)) != std::string::npos) {
+				highlighted += str.substr(pos, search.length());
+				highlighted = highlighted.substr(0, pos) + "\033[31m" + highlighted.substr(pos, search.length()) + "\033[0m" + highlighted.substr(pos + search.length());
+				pos += search.length();
+			}
+			std::cout << highlighted << std::endl;
+			curr = curr->next;
+		}
+	}
+
+	std::string toString() {
+		std::stringstream ss;
+		Item* current = this->getHead();
+		while (current != nullptr) {
+			ss << current->ptr->toString() << "\n";
+			current = current->next;
+		}
+		return ss.str();
+	}
 };
 
-
+	

@@ -1,6 +1,6 @@
 #pragma once
 #include "Tour.h"
-
+#include <cstring>
 
 enum bookingStatus {
 	finished,
@@ -20,12 +20,14 @@ public:
 	// Getters
 	char* getBookingDate(void);
 	int getNumberOfClients(void);
-	Tour* getTour();
+	Tour* getTour(void);
+	bookingStatus getStatus(void);
 
 	//Setters
 	void setBookingDate(const char* bDate);
 	void setNumberOfClients(int numOfCl);
 	void setTour(Tour* tr);
+	std::string toString(void);
 
 	void print(void);
 };

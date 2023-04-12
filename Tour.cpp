@@ -1,6 +1,7 @@
 #define _CRT_SECURE_NO_WARNINGS
 #include "Tour.h"
 #include <cstring>
+#include <sstream>
 #include <iostream>
 
 
@@ -53,4 +54,14 @@ void Tour::print() {
 		"\nStart date: " << startDate <<
 		"\nFinish date: " << finishDate <<
 		"\nDescription: " << description << "\n\n";
+}
+
+std::string Tour::toString() {
+	std::stringstream ss;
+	ss << "Name: " << getName() << "\n";  
+	ss << "Price: " << getPrice() << "\n";
+	ss << "Start date: " << getStartDate() << "\n";
+	ss << "Finish date: " << getFinishDate() << "\n";
+	ss << "Description: " << getDescription() << "\n";
+	return ss.str();
 }

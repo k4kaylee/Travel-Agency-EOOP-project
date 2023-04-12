@@ -2,6 +2,7 @@
 #include "Booking.h"
 #include "List.h"
 #include "Tour.h"
+#include <cstring>
 
 
 class Client{
@@ -28,5 +29,6 @@ public:
     void setEmail(const char* n);
     void book(Tour* tr, int numOfCl = 1);
     void print(void);
+    std::string toString();
 };
 

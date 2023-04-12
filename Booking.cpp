@@ -2,6 +2,7 @@
 #include "Booking.h"
 #include <cstring>
 #include <iostream>
+#include <sstream>
 
 
 
@@ -20,6 +21,7 @@ Booking::~Booking() {
 char* Booking::getBookingDate() { return bookingDate; }
 int Booking::getNumberOfClients() { return numberOfClients; }
 Tour* Booking::getTour() { return tour; }
+bookingStatus Booking::getStatus() { return status; }
 
 //Setters
 void Booking::setBookingDate(const char* bd) {
@@ -51,4 +53,13 @@ void Booking::print() {
 		"\n\t\tStart date: " << tour->getStartDate() <<
 		"\n\t\tFinish date: " << tour->getFinishDate() <<
 		"\n\t\tDescription: " << tour->getDescription();
+}
+
+std::string Booking::toString() {
+	std::stringstream ss;
+	ss << "Booking date: " << getBookingDate() << "\n";
+	ss << "Number of clients: " << getNumberOfClients() << "\n";
+	ss << "Tour:\n" << getTour()->toString() << "\n";
+	ss << "Status: " << getStatus() << "\n";
+	return ss.str();
 }
