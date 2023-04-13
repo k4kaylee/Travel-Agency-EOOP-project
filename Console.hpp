@@ -273,17 +273,12 @@ void showTourList() {
 void search(std::vector<std::string> command) {
 	if (command.size() >= 2) {
 		char letter;
-		std::string ListDemo = "ListDemo\nBanana\nApple\nMakintosh\nSumakin";
 		std::string search;
-		std::string storage;
 		gotoxy(0, 3);
 
-		storage = ListDemo;
-		std::cout << storage;
 		while (true) {
 			if (search.empty()) {
 				gotoxy(0, 3);
-				std::cout << ListDemo;
 			}
 			gotoxy(search.length() + 1, 0);
 
@@ -301,19 +296,10 @@ void search(std::vector<std::string> command) {
 				if (search.empty()) {
 					continue;
 				}
+
 				gotoxy(0, 3);
-				std::string highlighted;
-				for (size_t pos = 0; pos < ListDemo.length(); pos++) {
-					if (ListDemo.substr(pos, search.length()) == search) {
-						// Если подстрока совпадает с search, то выделяем ее красным цветом
-						highlighted += "\033[31m" + ListDemo.substr(pos, search.length()) + "\033[0m";
-						pos += search.length() - 1;
-					}
-					else {
-						highlighted += ListDemo[pos];
-					}
-				}
-				std::cout << highlighted;
+				agency->getClientList()->search(search);
+
 				gotoxy(0, 0);
 				std::cout << search;
 			}
@@ -322,23 +308,20 @@ void search(std::vector<std::string> command) {
 				search += letter;
 				int length = search.length();
 				gotoxy(0, 3);
-				std::string highlighted;
-				agency->getClientList()->search(search);
 				clear();
-				gotoxy(0, 3); 
+				gotoxy(0, 3);
+				agency->getClientList()->search(search);
 
 				gotoxy(0, 0);
 				std::cout << search;
 				continue;
 			}
 		}
-
-
-
-
 	}
-	std::cerr << "ERROR: not enough arguments. From '--help':\n'search <option>' - runs search engine to find client or tour. <option> may be equal to 'tour' or 'client'.\n";
-	return;
+	else {
+		std::cerr << "ERROR: not enough arguments. From '--help':\n'search <option>' - runs search engine to find client or tour. <option> may be equal to 'tour' or 'client'.\n";
+		return;
+	}
 }
 
 void Engine::run() {
