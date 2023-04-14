@@ -1,6 +1,6 @@
 #pragma once
 #include "Tour.h"
-#include <cstring>
+#include <string>
 
 enum bookingStatus {
 	finished,

@@ -124,22 +124,30 @@ public:
 		while (curr != nullptr) {
 			T* value = curr->ptr;
 			std::string str = value->toString();
-			size_t pos = 0;
-			std::string highlighted = str;
-			while ((pos = str.find(search, pos)) != std::string::npos) {
+			std::string highlighted;
+			size_t pos_str = 0;
+			size_t last_pos = 0;
+
+			while ((pos_str = str.find(search, pos_str)) != std::string::npos) {
 				found = true;
-				highlighted = highlighted.substr(0, pos) + "\033[31m" + search + "\033[0m" + highlighted.substr(pos + search.length());
-				pos += search.length() + 9; // Add the length of the color escape codes
+				highlighted.append(str, last_pos, pos_str - last_pos);
+				highlighted.append("\033[31m");
+				highlighted.append(search);
+				highlighted.append("\033[0m");
+				last_pos = pos_str + search.length();
+				pos_str += search.length();
 			}
-			if (highlighted != str) {
+			highlighted.append(str, last_pos, str.length() - last_pos);
+
+			if (found) {
 				std::cout << highlighted << std::endl;
 			}
 			curr = curr->next;
 		}
 		if (!found) {
-			this->print();
+			std::cout << this->toString();
 		}
-	}
+	};
 
 
 	std::string toString() {

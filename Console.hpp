@@ -279,6 +279,7 @@ void search(std::vector<std::string> command) {
 		while (true) {
 			if (search.empty()) {
 				gotoxy(0, 3);
+				std::cout << agency->getClientList()->toString();
 			}
 			gotoxy(search.length() + 1, 0);
 
