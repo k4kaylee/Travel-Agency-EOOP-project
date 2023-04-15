@@ -12,8 +12,13 @@
 #include <conio.h>
 #include "TravelAgency.h"
 #include "Client.h"
+#include "List.h"
 #include "Tour.h"
-#define gotoxy(x,y) std::cout << "\033[" << y << ";" << x << "H"
+
+
+void gotoxy(int x, int y) {
+	std::cout << "\033[0r" << "\033[" << y << ";" << x << "H";
+}
 
 
 TravelAgency* agency;
@@ -47,8 +52,6 @@ void clear() {
 	system("clear");
 #endif
 }
-
-
 
 
 
@@ -90,7 +93,6 @@ std::string getDescription() {
 	clear();
 	return description;
 }
-
 
 void help() {
 	std::cout << "Commands:\n";
@@ -159,7 +161,7 @@ void runTests() {
 	listOfTours->add(tour3);
 	listOfTours->add(tour4);
 
-	TravelAgency* agency = new TravelAgency(listOfTours, listOfClients);
+	agency = new TravelAgency(listOfTours, listOfClients);
 
 	agency->getTourList()->print();
 	client5->book(tour1);
@@ -183,7 +185,7 @@ void addNewClient(std::vector<std::string> command) {
 		}
 		Client* client = new Client(command[1].c_str(), command[2].c_str(), command[3].c_str(), command[4].c_str());
 		if (agency->getClientList()->find(client)) {
-			std::cerr << "ERROR: cliemt '" << command[1] << "' already exists.";
+			std::cerr << "ERROR: client '" << command[1] << "' already exists.";
 			return;
 		}
 		agency->getClientList()->add(client);
@@ -249,7 +251,7 @@ void addNewTour(std::vector<std::string> command) {
 
 		Tour* tour = new Tour(command[1].c_str(), std::stof(command[2]), command[3].c_str(), command[4].c_str(), getDescription().c_str());
 		if (agency->getTourList()->find(tour)) {
-			std::cerr << "ERROR: tour '" << command[1] << "' already exists.";
+			std::cerr << "ERROR: tour '" << command[1] << "' already exists.\n";
 			return;
 		}
 		agency->getTourList()->add(tour);
@@ -272,6 +274,10 @@ void showTourList() {
 
 void search(std::vector<std::string> command) {
 	if (command.size() >= 2) {
+		for (char& letter : command[1]) {
+			letter = std::tolower(letter);
+		}
+
 		char letter;
 		std::string search;
 		gotoxy(0, 3);
@@ -279,7 +285,15 @@ void search(std::vector<std::string> command) {
 		while (true) {
 			if (search.empty()) {
 				gotoxy(0, 3);
-				std::cout << agency->getClientList()->toString();
+				if (command[1] == "client")
+					std::cout << agency->getClientList()->toString();
+				else if (command[1] == "tour")
+					std::cout << agency->getTourList()->toString();
+				else {
+					gotoxy(0, 0);
+					std::cerr << "'" << command[1] << "' - unknown parameter. Consider using 'client' or 'tour'.\n";
+					return;
+				}
 			}
 			gotoxy(search.length() + 1, 0);
 
@@ -299,22 +313,29 @@ void search(std::vector<std::string> command) {
 				}
 
 				gotoxy(0, 3);
-				agency->getClientList()->search(search);
+				if (command[1] == "client")
+					agency->getClientList()->search(search);
+				else if (command[1] == "tour")
+					agency->getTourList()->search(search);
 
 				gotoxy(0, 0);
 				std::cout << search;
 			}
 
-			if (isalpha(letter) || isdigit(letter) || isspace(letter)) {
+			if (isalpha(letter) || isdigit(letter) || isspace(letter) || letter == '@' || letter == '.') {
 				search += letter;
 				int length = search.length();
 				gotoxy(0, 3);
 				clear();
 				gotoxy(0, 3);
-				agency->getClientList()->search(search);
-
+				
+				if (command[1] == "client")
+					agency->getClientList()->search(search);
+				else if (command[1] == "tour")
+					agency->getTourList()->search(search);
+				
 				gotoxy(0, 0);
-				std::cout << search;
+				std::cout << search; 
 				continue;
 			}
 		}

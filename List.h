@@ -2,8 +2,9 @@
 class Client;
 class Booking;
 class Tour;
-#include <cstring>
+#include <string>
 #include <iostream>
+#include <algorithm>
 
 
 
@@ -120,34 +121,47 @@ public:
 
 	void search(const std::string& search) {
 		Item* curr = head;
-		bool found = false;
+		bool foundAny = false;
 		while (curr != nullptr) {
 			T* value = curr->ptr;
 			std::string str = value->toString();
+			std::stringstream ss(str);
+			std::string line;
 			std::string highlighted;
-			size_t pos_str = 0;
-			size_t last_pos = 0;
+			bool found = false;
 
-			while ((pos_str = str.find(search, pos_str)) != std::string::npos) {
-				found = true;
-				highlighted.append(str, last_pos, pos_str - last_pos);
-				highlighted.append("\033[31m");
-				highlighted.append(search);
-				highlighted.append("\033[0m");
-				last_pos = pos_str + search.length();
-				pos_str += search.length();
+			std::string searchLower = search;
+			std::transform(searchLower.begin(), searchLower.end(), searchLower.begin(), ::tolower);
+
+
+			while (std::getline(ss, line)) {
+				std::string lineLower = line;
+				std::transform(lineLower.begin(), lineLower.end(), lineLower.begin(), ::tolower);
+				size_t colonPos = line.find(':');
+				if (colonPos != std::string::npos) {	
+					size_t searchPos = lineLower.find(searchLower, colonPos + 1);
+					if (searchPos != std::string::npos) {
+						found = true;
+						std::string searchHighlight = line.substr(searchPos, search.length());
+						std::string replaceStr = "\033[31m" + searchHighlight + "\033[0m";
+						line.replace(searchPos, search.length(), replaceStr);
+					}
+				}
+				highlighted += line + "\n";
 			}
-			highlighted.append(str, last_pos, str.length() - last_pos);
 
 			if (found) {
+				foundAny = true;
 				std::cout << highlighted << std::endl;
 			}
 			curr = curr->next;
 		}
-		if (!found) {
+		if (!foundAny) {
 			std::cout << this->toString();
 		}
-	};
+	}
+
+
 
 
 	std::string toString() {
