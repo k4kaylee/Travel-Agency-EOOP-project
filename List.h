@@ -162,6 +162,31 @@ public:
 	}
 
 
+	void remove(std::string name) {
+		Item* current = NULL;
+		Item* previous = NULL;
+		for (Item* temp = head; temp != NULL; temp = temp->next) {
+			if (temp->ptr->getName() == name) {
+				current = temp;
+				break;
+			}
+			previous = temp;
+		}
+		if (current == NULL) {
+			std::cout << "'" << name << "'" << " was not found.\n";
+			return;
+		}
+		
+		if (previous == NULL) {
+			head = current->next;
+		}
+		else {
+			previous->next = current->next;
+		}
+		delete current;
+		std::cout << "'" << name << "'" << " was deleted.\n";
+	}
+
 
 
 	std::string toString() {

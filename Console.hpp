@@ -10,6 +10,7 @@
 #include <chrono>
 #include <iomanip>
 #include <conio.h>
+#include <limits>
 #include "TravelAgency.h"
 #include "Client.h"
 #include "List.h"
@@ -29,15 +30,19 @@ enum Command {
 	RUNTESTS = 2,
 	ADDCLIENT = 3,
 	ADDTOUR = 4,
-	SHOWCLIENTS = 5,
-	SHOWTOURS = 6,
-	SEARCH = 7
+	REMOVETOUR = 5,
+	REMOVECLIENT = 6,
+	SHOWCLIENTS = 7,
+	SHOWTOURS = 8,
+	SEARCH = 9
 };
 
 std::unordered_map<std::string, int> commandMap{
 	{"exit", EXIT},
 	{"--help", HELP},
 	{"runalltests", RUNTESTS},
+	{"removeclient", REMOVECLIENT},
+	{"removetour", REMOVETOUR},
 	{"addnewclient", ADDCLIENT},
 	{"addnewtour", ADDTOUR},
 	{"showclientlist", SHOWCLIENTS},
@@ -52,6 +57,7 @@ void clear() {
 	system("clear");
 #endif
 }
+
 
 
 
@@ -99,6 +105,8 @@ void help() {
 	std::cout << "'runalltests' - simply observe all possible tests done automatically. No other interactions needed.\n";
 	std::cout << "'showclientlist' - prints list of clients at its current state.\n";
 	std::cout << "'showtourlist' - prints list of tours at its current state.\n";
+	std::cout << "'removeclient <name>' - removes client with a given name from the list.\n";
+	std::cout << "'removetour <name>' - removes tpur with a given name from the list.\n";
 	std::cout << "'addnewclient <clientName> <clientLastName> <clientPhoneNumber> <clientEmail>' - add new Client to Travel Agency client base.\n";
 	std::cout << "'addnewtour <tourName> <price> <startDate> <finishDate>' - add new Tour to Travel Agency tour list.\n";
 	std::cout << "'search <option>' - runs search engine to find client or tour.\n\t\t<option> may be equal to 'tour' or 'client'.\n\t\tNOTE: to exit search, press ESC.\n";
@@ -171,31 +179,6 @@ void runTests() {
 
 }
 
-void addNewClient(std::vector<std::string> command) {
-	if (command.size() >= 5) {
-		const std::regex email("(\\w+)(\\.|_)?(\\w*)@(\\w+)(\\.(\\w+))+");
-		const std::regex phone("^\\+?[0-9]{1,3}-?[0-9]{3,}-?[0-9]{4,}$");
-		if (!std::regex_match(command[3], phone)) {
-			std::cerr << "ERROR: '" << command[3] << "' - incorrect phone input\n";
-			return;
-		}
-		if (!std::regex_match(command[4], email)) {
-			std::cerr << "ERROR: '" << command[4] << "' - incorrect email input\n";
-			return;
-		}
-		Client* client = new Client(command[1].c_str(), command[2].c_str(), command[3].c_str(), command[4].c_str());
-		if (agency->getClientList()->find(client)) {
-			std::cerr << "ERROR: client '" << command[1] << "' already exists.";
-			return;
-		}
-		agency->getClientList()->add(client);
-		client->print();
-		return;
-	}
-	std::cout << "ERROR: not enough arguments.\n\nFrom '--help':\naddnewclient <clientName> <clientLastName> <clientPhoneNumber> <clientEmail>' - add new Client to Travel Agency client base.\n\n";
-	return;
-}
-
 std::string getCurrentDate() {
 	auto now = std::chrono::system_clock::now();
 	auto time = std::chrono::system_clock::to_time_t(now);
@@ -226,10 +209,34 @@ bool compareDate(std::string date1, std::string date2) {
 	return difftime(time1, time2) < 0;
 }
 
+void addNewClient(std::vector<std::string> command) {
+	if (command.size() >= 5) {
+		const std::regex email("(\\w+)(\\.|_)?(\\w*)@(\\w+)(\\.(\\w+))+");
+		const std::regex phone("^\\+?[0-9]{1,3}-?[0-9]{3,}-?[0-9]{4,}$");
+		if (!std::regex_match(command[3], phone)) {
+			std::cerr << "ERROR: '" << command[3] << "' - incorrect phone input\n";
+			return;
+		}
+		if (!std::regex_match(command[4], email)) {
+			std::cerr << "ERROR: '" << command[4] << "' - incorrect email input\n";
+			return;
+		}
+		Client* client = new Client(command[1].c_str(), command[2].c_str(), command[3].c_str(), command[4].c_str());
+		if (agency->getClientList()->find(client)) {
+			std::cerr << "ERROR: client '" << command[1] << "' already exists.";
+			return;
+		}
+		agency->getClientList()->add(client);
+		client->print();
+		return;
+	}
+	std::cout << "ERROR: not enough arguments.\n\nFrom '--help':\naddnewclient <clientName> <clientLastName> <clientPhoneNumber> <clientEmail>' - add new Client to Travel Agency client base.\n\n";
+	return;
+}
+
 void addNewTour(std::vector<std::string> command) {
 	if (command.size() >= 5) {
 		const std::regex date("^(?:(?:31(\\/|-|\\.)(?:0?[13578]|1[02]))\\1|(?:(?:29|30)(\\/|-|\\.)(?:0?[13-9]|1[0-2])\\2))(?:(?:1[6-9]|[2-9]\\d)?\\d{2})$|^(?:29(\\/|-|\\.)0?2\\3(?:(?:(?:1[6-9]|[2-9]\\d)?(?:0[48]|[2468][048]|[13579][26])|(?:(?:16|[2468][048]|[3579][26])00))))$|^(?:0?[1-9]|1\\d|2[0-8])(\\/|-|\\.)(?:(?:0?[1-9])|(?:1[0-2]))\\4(?:(?:1[6-9]|[2-9]\\d)?\\d{2})$");
-
 
 
 		if (!std::regex_match(command[3], date)) {
@@ -260,6 +267,28 @@ void addNewTour(std::vector<std::string> command) {
 	}
 	std::cout << "ERROR: not enough arguments.\n\nFrom '--help':\naddnewtour <tourName> <price> <startDate> <finishDate>' - add new Tour to Travel Agency tour list.\n\n";
 	return;
+}
+
+void removeClient(std::vector<std::string> command) {
+	if (command.size() >= 2) {
+		agency->getClientList()->remove(command[1]);
+		return;
+	}
+	else {
+		std::cerr << "ERROR: not enough arguments. From '--help': 'removetour <name>' - removes client with a given name from the list.\n";
+		return;
+	}
+}
+
+void removeTour(std::vector<std::string> command) {
+	if (command.size() >= 2) {
+		agency->getTourList()->remove(command[1]);
+		return;
+	}
+	else {
+		std::cerr << "ERROR: not enough arguments. From '--help': 'removeclient <name>' - removes client with a given name from the list.\n";
+		return;
+	}
 }
 
 void showClientList() {
@@ -295,6 +324,8 @@ void search(std::vector<std::string> command) {
 					return;
 				}
 			}
+			
+
 			gotoxy(search.length() + 1, 0);
 
 			letter = _getch();
@@ -317,7 +348,6 @@ void search(std::vector<std::string> command) {
 					agency->getClientList()->search(search);
 				else if (command[1] == "tour")
 					agency->getTourList()->search(search);
-
 				gotoxy(0, 0);
 				std::cout << search;
 			}
@@ -328,14 +358,14 @@ void search(std::vector<std::string> command) {
 				gotoxy(0, 3);
 				clear();
 				gotoxy(0, 3);
-				
+
 				if (command[1] == "client")
 					agency->getClientList()->search(search);
 				else if (command[1] == "tour")
 					agency->getTourList()->search(search);
-				
+
 				gotoxy(0, 0);
-				std::cout << search; 
+				std::cout << search;
 				continue;
 			}
 		}
@@ -366,6 +396,12 @@ void Engine::run() {
 				break;
 			case ADDTOUR:
 				addNewTour(command);
+				break;
+			case REMOVECLIENT:
+				removeClient(command);
+				break;
+			case REMOVETOUR:
+				removeTour(command);
 				break;
 			case SHOWCLIENTS:
 				showClientList();
