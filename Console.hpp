@@ -10,6 +10,8 @@
 #include <chrono>
 #include <iomanip>
 #include <conio.h>
+#include <algorithm>
+#include <numeric>
 #include <limits>
 #include "TravelAgency.h"
 #include "Client.h"
@@ -58,7 +60,14 @@ void clear() {
 #endif
 }
 
-
+std::string removeQuotes(std::string str) {
+	for (size_t i = 0; i < str.length(); ++i) {
+		if (str[i] == '"') {
+			str.erase(i--, 1);
+		}
+	}
+	return str;
+}
 
 
 class Engine {
@@ -106,7 +115,7 @@ void help() {
 	std::cout << "'showclientlist' - prints list of clients at its current state.\n";
 	std::cout << "'showtourlist' - prints list of tours at its current state.\n";
 	std::cout << "'removeclient <name>' - removes client with a given name from the list.\n";
-	std::cout << "'removetour <name>' - removes tpur with a given name from the list.\n";
+	std::cout << "'removetour <name>' - removes tour with a given name from the list.\n\t\tIf the name consists of several words, it must be included in \"\".\n";
 	std::cout << "'addnewclient <clientName> <clientLastName> <clientPhoneNumber> <clientEmail>' - add new Client to Travel Agency client base.\n";
 	std::cout << "'addnewtour <tourName> <price> <startDate> <finishDate>' - add new Tour to Travel Agency tour list.\n";
 	std::cout << "'search <option>' - runs search engine to find client or tour.\n\t\t<option> may be equal to 'tour' or 'client'.\n\t\tNOTE: to exit search, press ESC.\n";
@@ -275,21 +284,42 @@ void removeClient(std::vector<std::string> command) {
 		return;
 	}
 	else {
-		std::cerr << "ERROR: not enough arguments. From '--help': 'removetour <name>' - removes client with a given name from the list.\n";
+		std::cerr << "ERROR: not enough arguments. From '--help': 'removeclient <name>' - removes client with a given name from the list.\n";
 		return;
 	}
 }
 
 void removeTour(std::vector<std::string> command) {
 	if (command.size() >= 2) {
+		if (command[1][0] == '\"') {
+			std::string tourName;
+			for (size_t i = 2; i < command.size(); i++) {
+				if (command[i][command[i].length() - 1] == '"') {
+					tourName = std::accumulate(command.begin() + 1, 
+							   command.begin() + i + 1, 
+						       std::string(""), 
+							   [](std::string acc, std::string newWord) { 
+									if (acc.empty())
+										return newWord;
+									else
+										return acc + " " + newWord;
+								}
+					);
+					agency->getTourList()->remove(removeQuotes(tourName));
+					return;
+				}
+			}
+		}
 		agency->getTourList()->remove(command[1]);
 		return;
 	}
 	else {
-		std::cerr << "ERROR: not enough arguments. From '--help': 'removeclient <name>' - removes client with a given name from the list.\n";
+		std::cerr << "ERROR: not enough arguments. From '--help': 'removetour <name>' - removes client with a given name from the list.\n";
 		return;
 	}
 }
+
+
 
 void showClientList() {
 	std::cout << "Current version of Client List:\n\n";
