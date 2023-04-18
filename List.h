@@ -5,6 +5,7 @@ class Tour;
 #include <string>
 #include <iostream>
 #include <algorithm>
+#include <vector>
 
 
 
@@ -34,8 +35,6 @@ public:
 			return false;
 		}
 	};
-
-
 
 	void add(Client* itemPtr) {
 		Item* newItem = new Item;
@@ -93,7 +92,6 @@ public:
 			current->next = newItem;
 		}
 	}
-
 
 	void print() {
 		Item* current = head;
@@ -161,7 +159,6 @@ public:
 		}
 	}
 
-
 	void remove(std::string name) {
 		Item* current = NULL;
 		Item* previous = NULL;
@@ -187,8 +184,6 @@ public:
 		std::cout << "'" << name << "'" << " was deleted.\n";
 	}
 
-
-
 	std::string toString() {
 		std::stringstream ss;
 		Item* current = this->getHead();
@@ -198,6 +193,26 @@ public:
 		}
 		return ss.str();
 	}
+
+	std::vector<std::string> toVector(){
+		std::vector<std::string> vec;
+		std::string item = this->toString();
+		std::istringstream tokenStream(item);
+		while (std::getline(tokenStream, item, '\n')) {
+			vec.push_back(item);
+		}
+
+		return vec;
+	};
+
+	T* getItemByName(std::string name) {
+		for (Item* temp = head; temp != nullptr; temp = temp->next) {
+			if (strcmp(temp->ptr->getName(), name.c_str()) == 0) {
+				return temp->ptr;
+			}
+		}
+		return nullptr;
+	};
 };
 
 	

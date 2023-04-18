@@ -23,6 +23,7 @@ void gotoxy(int x, int y) {
 	std::cout << "\033[0r" << "\033[" << y << ";" << x << "H";
 }
 
+const int LINES_PER_PAGE = 15;
 
 TravelAgency* agency;
 
@@ -36,7 +37,8 @@ enum Command {
 	REMOVECLIENT = 6,
 	SHOWCLIENTS = 7,
 	SHOWTOURS = 8,
-	SEARCH = 9
+	BOOK = 9,
+	SEARCH = 10
 };
 
 std::unordered_map<std::string, int> commandMap{
@@ -49,6 +51,7 @@ std::unordered_map<std::string, int> commandMap{
 	{"addnewtour", ADDTOUR},
 	{"showclientlist", SHOWCLIENTS},
 	{"showtourlist", SHOWTOURS},
+	{"book", BOOK},
 	{"search", SEARCH}
 };
 
@@ -69,6 +72,36 @@ std::string removeQuotes(std::string str) {
 	return str;
 }
 
+std::string accumulateStrings(std::vector<std::string> command){
+	std::string str;
+	for (size_t i = 2; i < command.size(); i++) {
+		if (command[i][command[i].length() - 1] == '"') {
+			str = std::accumulate(command.begin() + 1,
+				command.begin() + i + 1,
+				std::string(""),
+				[](std::string acc, std::string newWord) {
+					if (acc.empty())
+						return newWord;
+					else
+						return acc + " " + newWord;
+				}
+			);
+		}
+	}
+	return str;
+}
+
+void displayPage(const std::string& search, const std::vector<std::string>& items, int currentPage) {
+	clear();
+	int totalPages = (items.size() + LINES_PER_PAGE - 1) / LINES_PER_PAGE;
+	std::cout << "\nSearch results (" << currentPage + 1 << "/" << totalPages << "):\n\n";
+
+	for (int i = currentPage * LINES_PER_PAGE; i < (currentPage + 1) * LINES_PER_PAGE && i < items.size(); ++i) {
+		std::cout << items[i] << std::endl;
+	}
+
+	std::cout << "\nPress '->' for next page, '<-' for previous page, type 'exit' to quit, or any other key to continue searching.\n";
+}
 
 class Engine {
 	std::vector<std::string> command;
@@ -118,6 +151,7 @@ void help() {
 	std::cout << "'removetour <name>' - removes tour with a given name from the list.\n\t\tIf the name consists of several words, it must be included in \"\".\n";
 	std::cout << "'addnewclient <clientName> <clientLastName> <clientPhoneNumber> <clientEmail>' - add new Client to Travel Agency client base.\n";
 	std::cout << "'addnewtour <tourName> <price> <startDate> <finishDate>' - add new Tour to Travel Agency tour list.\n";
+	std::cout << "'book <client_name> <tour_name>' - books tour for a given client. For tours with several words in the name put it in \"\".\n";
 	std::cout << "'search <option>' - runs search engine to find client or tour.\n\t\t<option> may be equal to 'tour' or 'client'.\n\t\tNOTE: to exit search, press ESC.\n";
 }
 
@@ -143,7 +177,7 @@ void runTests() {
 \nfrom Honolulu to Maui. Enjoy stunning beaches, tropical rainforests,\
 \nsand breathtaking landscapes.\n");
 
-	Tour* tour2 = new Tour("European Adventure",
+	Tour* tour2 = new Tour("European Gorgeous Adventure",
 		4500.0,
 		"15.02.2021",
 		"26.02.2021",
@@ -319,8 +353,6 @@ void removeTour(std::vector<std::string> command) {
 	}
 }
 
-
-
 void showClientList() {
 	std::cout << "Current version of Client List:\n\n";
 	agency->getClientList()->print();
@@ -329,6 +361,28 @@ void showClientList() {
 void showTourList() {
 	std::cout << "Current version of tour list: \n";
 	agency->getTourList()->print();
+}
+
+void book(std::vector<std::string> command){
+	if (command.size() >= 3) {
+		
+		Client* client = agency->getClientList()->getItemByName(command[1]);
+		Tour* tour = agency->getTourList()->getItemByName(command[2]);
+		if (client == nullptr) {
+			std::cerr << "ERROR: '" << command[1] << "' was not found.\n";
+			return;
+		}
+		else if(tour == nullptr) {
+			std::cerr << "ERROR: '" << command[2] << "' was not found.\n";
+			return; 
+		}
+
+		client->book(tour);
+		std::cout << "Tour '" << command[1] << "' was booked by '" << command[2] << "'.\n";
+	}
+	else {
+		std::cout << "ERROR: not enough arguments.\nFrom '--help': 'book <client_name> <tour_name>' - books tour for a given client. For tours with\nseveral words in the name put it in \"\".\n";
+	}
 }
 
 void search(std::vector<std::string> command) {
@@ -354,7 +408,7 @@ void search(std::vector<std::string> command) {
 					return;
 				}
 			}
-			
+
 
 			gotoxy(search.length() + 1, 0);
 
@@ -438,6 +492,9 @@ void Engine::run() {
 				break;
 			case SHOWTOURS:
 				showTourList();
+				break;
+			case BOOK:
+				book(command);
 				break;
 			case SEARCH:
 				search(command);
