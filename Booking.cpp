@@ -6,10 +6,10 @@
 
 
 
-Booking::Booking(const char* bDate, int numOfCl, Tour* tr) {
-	setBookingDate(bDate);
-	setNumberOfClients(numOfCl);
+Booking::Booking(Tour* tr, bookingStatus st) {
+	setBookingDate(getCurrentDate());
 	setTour(tr);
+	setStatus(st);
 }
 
 Booking::~Booking() {
@@ -19,9 +19,14 @@ Booking::~Booking() {
 
 // Getters
 char* Booking::getBookingDate() { return bookingDate; }
-int Booking::getNumberOfClients() { return numberOfClients; }
 Tour* Booking::getTour() { return tour; }
 bookingStatus Booking::getStatus() { return status; }
+char* Booking::getCurrentDate() {
+	std::time_t now = std::time(nullptr);
+	char currentTime[20];
+	std::strftime(currentTime, 20, "%Y-%m-%d %H:%M:%S", std::localtime(&now));
+	return currentTime;
+}
 
 //Setters
 void Booking::setBookingDate(const char* bd) {
@@ -30,12 +35,15 @@ void Booking::setBookingDate(const char* bd) {
     strcpy(bookingDate, bd);
 }
 
-void Booking::setNumberOfClients(int n) { numberOfClients = n; }
 void Booking::setTour(Tour* t) {
 	if (tour != nullptr) {
 		delete tour;
 	}
 	tour = t; 
+}
+
+void Booking::setStatus(bookingStatus st) {
+	status = st;
 }
 
 void Booking::print() {
@@ -46,7 +54,6 @@ void Booking::print() {
 		std::cout << "\tBooking status: finished";
 	}
 	std::cout << "\n\tBooking date: " << bookingDate <<
-			 	 "\n\tClients registered: " << numberOfClients <<
 		         "\n\tLinked tour: \n";
 	std::cout << "\t\tName: " << tour->getName() <<
 		"\n\t\tPrice: " << tour->getPrice() <<
@@ -58,8 +65,11 @@ void Booking::print() {
 std::string Booking::toString() {
 	std::stringstream ss;
 	ss << "Booking date: " << getBookingDate() << "\n";
-	ss << "Number of clients: " << getNumberOfClients() << "\n";
 	ss << "Tour:\n" << getTour()->toString() << "\n";
 	ss << "Status: " << getStatus() << "\n";
 	return ss.str();
+}
+
+bool Booking::isEqual(Booking* item) {
+	return strcmp(this->getTour()->getName(), item->getTour()->getName()) == 0;
 }

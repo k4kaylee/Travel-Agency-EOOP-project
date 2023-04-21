@@ -29,6 +29,7 @@ char* Client::getName() { return name; }
 char* Client::getLastName() { return lastname; }
 char* Client::getPhoneNumber() { return phoneNumber; }
 char* Client::getEmail() { return email; }
+List<Booking>* Client::getListOfBookings() { return listOfBookings; }
 
 // Setters
 void Client::setName(const char* n) {
@@ -68,10 +69,7 @@ void Client::print() {
 }
 
 void Client::book(Tour* tr, int numOfCl) {
-    std::time_t now = std::time(nullptr);
-    char currentTime[20];
-    std::strftime(currentTime, 20, "%Y-%m-%d %H:%M:%S", std::localtime(&now));
-    Booking* newBooking = new Booking(currentTime, numOfCl, tr);
+    Booking* newBooking = new Booking(tr);
     listOfBookings->add(newBooking);
 }
 
@@ -87,4 +85,8 @@ std::string Client::toString() {
         ss << listOfBookings->toString();
     }
     return ss.str();
+}
+
+bool Client::isEqual(Client* item) {
+    return strcmp(this->getName(), item->getName()) == 0;
 }

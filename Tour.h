@@ -26,6 +26,8 @@ public:
 	char* getDescription(void) { return description; };
 
 	void print();
+
+	bool isEqual(Tour* item);
 };
 
 		

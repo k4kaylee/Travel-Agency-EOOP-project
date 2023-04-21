@@ -72,11 +72,11 @@ std::string removeQuotes(std::string str) {
 	return str;
 }
 
-std::string accumulateStrings(std::vector<std::string> command){
+std::string accumulateStrings(std::vector<std::string> command, int index = 2){
 	std::string str;
-	for (size_t i = 2; i < command.size(); i++) {
-		if (command[i][command[i].length() - 1] == '"') {
-			str = std::accumulate(command.begin() + 1,
+	for (size_t i = index; i < command.size(); i++) {
+		if (command[i].back() == '"') {
+			str = std::accumulate(command.begin() + i - 1,
 				command.begin() + i + 1,
 				std::string(""),
 				[](std::string acc, std::string newWord) {
@@ -311,7 +311,7 @@ void addNewTour(std::vector<std::string> command) {
 	std::cout << "ERROR: not enough arguments.\n\nFrom '--help':\naddnewtour <tourName> <price> <startDate> <finishDate>' - add new Tour to Travel Agency tour list.\n\n";
 	return;
 }
-
+             
 void removeClient(std::vector<std::string> command) {
 	if (command.size() >= 2) {
 		agency->getClientList()->remove(command[1]);
@@ -329,15 +329,15 @@ void removeTour(std::vector<std::string> command) {
 			std::string tourName;
 			for (size_t i = 2; i < command.size(); i++) {
 				if (command[i][command[i].length() - 1] == '"') {
-					tourName = std::accumulate(command.begin() + 1, 
-							   command.begin() + i + 1, 
-						       std::string(""), 
-							   [](std::string acc, std::string newWord) { 
-									if (acc.empty())
-										return newWord;
-									else
-										return acc + " " + newWord;
-								}
+					tourName = std::accumulate(command.begin() + 1,
+						command.begin() + i + 1,
+						std::string(""),
+						[](std::string acc, std::string newWord) {
+							if (acc.empty())
+								return newWord;
+							else
+								return acc + " " + newWord;
+						}
 					);
 					agency->getTourList()->remove(removeQuotes(tourName));
 					return;
@@ -363,28 +363,40 @@ void showTourList() {
 	agency->getTourList()->print();
 }
 
-void book(std::vector<std::string> command){
+void book(std::vector<std::string> command) {
 	if (command.size() >= 3) {
-		
 		Client* client = agency->getClientList()->getItemByName(command[1]);
-		Tour* tour = agency->getTourList()->getItemByName(command[2]);
+		Tour* tour;
+		std::string tourName;
+		if (command[2].front() == '"') {
+			tourName = removeQuotes(accumulateStrings(command, 3));
+			tour = agency->getTourList()->getItemByName(tourName);
+		}
+		else {
+			tour = agency->getTourList()->getItemByName(command[2]);
+		}
 		if (client == nullptr) {
 			std::cerr << "ERROR: '" << command[1] << "' was not found.\n";
 			return;
 		}
-		else if(tour == nullptr) {
+		else if (tour == nullptr) {
 			std::cerr << "ERROR: '" << command[2] << "' was not found.\n";
-			return; 
+			return;
 		}
 
-		client->book(tour);
-		std::cout << "Tour '" << command[1] << "' was booked by '" << command[2] << "'.\n";
+		Booking* newBooking = new Booking(tour);
+		if (client->getListOfBookings()->find(newBooking))
+			std::cerr << "ERROR: booking of '" << tourName << "' already exists.\n";
+		else{
+			client->book(tour);
+			std::cout << "Tour '" << tourName << "' was booked by '" << command[1] << "'.\n";
+		}
 	}
 	else {
 		std::cout << "ERROR: not enough arguments.\nFrom '--help': 'book <client_name> <tour_name>' - books tour for a given client. For tours with\nseveral words in the name put it in \"\".\n";
 	}
 }
-
+ 
 void search(std::vector<std::string> command) {
 	if (command.size() >= 2) {
 		for (char& letter : command[1]) {

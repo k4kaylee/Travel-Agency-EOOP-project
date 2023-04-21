@@ -65,3 +65,7 @@ std::string Tour::toString() {
 	ss << "Description: " << getDescription() << "\n";
 	return ss.str();
 }
+
+bool Tour::isEqual(Tour* item) {
+	return strcmp(this->getName(), item->getName()) == 0;
+}

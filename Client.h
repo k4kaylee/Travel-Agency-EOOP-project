@@ -21,14 +21,18 @@ public:
     char* getLastName(void);
     char* getPhoneNumber(void);
     char* getEmail(void);
+    List<Booking>* getListOfBookings(void);
 
     // Setters
     void setName(const char* n);
     void setLastname(const char* n);
     void setPhoneNumber(const char* n);
     void setEmail(const char* n);
+
     void book(Tour* tr, int numOfCl = 1);
     void print(void);
     std::string toString();
+
+    bool isEqual(Client* item);
 };
 
