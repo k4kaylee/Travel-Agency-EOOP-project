@@ -6,6 +6,7 @@
 
 
 
+
 Booking::Booking(Tour* tr, bookingStatus st) {
 	setBookingDate(getCurrentDate());
 	setTour(tr);
@@ -19,6 +20,7 @@ Booking::~Booking() {
 
 // Getters
 char* Booking::getBookingDate() { return bookingDate; }
+char* Booking::getName() { return tour->getName(); }
 Tour* Booking::getTour() { return tour; }
 bookingStatus Booking::getStatus() { return status; }
 char* Booking::getCurrentDate() {
@@ -53,7 +55,7 @@ void Booking::print() {
 	else {
 		std::cout << "\tBooking status: finished";
 	}
-	std::cout << "\n\tBooking date: " << bookingDate <<
+	std::cout << "\n\tBooking date : " << bookingDate <<
 		         "\n\tLinked tour: \n";
 	std::cout << "\t\tName: " << tour->getName() <<
 		"\n\t\tPrice: " << tour->getPrice() <<
@@ -64,9 +66,14 @@ void Booking::print() {
 
 std::string Booking::toString() {
 	std::stringstream ss;
+	std::string st;
+	if (status == ongoing)
+		st = "ongoing";
+	else
+		st = "finished";
 	ss << "Booking date: " << getBookingDate() << "\n";
+	ss << "Status: " << st << "\n";
 	ss << "Tour:\n" << getTour()->toString() << "\n";
-	ss << "Status: " << getStatus() << "\n";
 	return ss.str();
 }
 

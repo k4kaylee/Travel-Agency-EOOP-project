@@ -117,6 +117,10 @@ public:
 		}
 	}
 
+	std::string splitString(std::string str) {
+		return str;
+	}
+
 	void search(const std::string& search) {
 		Item* curr = head;
 		bool foundAny = false;
@@ -131,7 +135,7 @@ public:
 			std::string searchLower = search;
 			std::transform(searchLower.begin(), searchLower.end(), searchLower.begin(), ::tolower);
 
-
+			std::vector<std::string> groupOfResults; //contains the search result string splitted in groups up to 15 strings in each
 			while (std::getline(ss, line)) {
 				std::string lineLower = line;
 				std::transform(lineLower.begin(), lineLower.end(), lineLower.begin(), ::tolower);
@@ -150,11 +154,13 @@ public:
 
 			if (found) {
 				foundAny = true;
+				highlighted = splitString(highlighted);
 				std::cout << highlighted << std::endl;
 			}
 			curr = curr->next;
 		}
 		if (!foundAny) {
+			//highlighted = this->toString();
 			std::cout << this->toString();
 		}
 	}
@@ -173,7 +179,7 @@ public:
 			std::cout << "'" << name << "'" << " was not found.\n";
 			return;
 		}
-		
+
 		if (previous == NULL) {
 			head = current->next;
 		}

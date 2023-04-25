@@ -38,7 +38,8 @@ enum Command {
 	SHOWCLIENTS = 7,
 	SHOWTOURS = 8,
 	BOOK = 9,
-	SEARCH = 10
+	UNBOOK = 10,
+	SEARCH = 11
 };
 
 std::unordered_map<std::string, int> commandMap{
@@ -52,6 +53,7 @@ std::unordered_map<std::string, int> commandMap{
 	{"showclientlist", SHOWCLIENTS},
 	{"showtourlist", SHOWTOURS},
 	{"book", BOOK},
+	{"unbook", UNBOOK},
 	{"search", SEARCH}
 };
 
@@ -74,18 +76,14 @@ std::string removeQuotes(std::string str) {
 
 std::string accumulateStrings(std::vector<std::string> command, int index = 2){
 	std::string str;
-	for (size_t i = index; i < command.size(); i++) {
+	for (size_t i = index; i < command.size(); ++i) {
+		if (i == index) {
+			str += command[i];
+			continue;
+		}
+		str += " " + command[i];
 		if (command[i].back() == '"') {
-			str = std::accumulate(command.begin() + i - 1,
-				command.begin() + i + 1,
-				std::string(""),
-				[](std::string acc, std::string newWord) {
-					if (acc.empty())
-						return newWord;
-					else
-						return acc + " " + newWord;
-				}
-			);
+			break;
 		}
 	}
 	return str;
@@ -152,6 +150,7 @@ void help() {
 	std::cout << "'addnewclient <clientName> <clientLastName> <clientPhoneNumber> <clientEmail>' - add new Client to Travel Agency client base.\n";
 	std::cout << "'addnewtour <tourName> <price> <startDate> <finishDate>' - add new Tour to Travel Agency tour list.\n";
 	std::cout << "'book <client_name> <tour_name>' - books tour for a given client. For tours with several words in the name put it in \"\".\n";
+	std::cout << "'unbook <client_name> <tour_name>' - unbooks tour for a given client.For tours with\nseveral words in the name put it in \"\".\n";
 	std::cout << "'search <option>' - runs search engine to find client or tour.\n\t\t<option> may be equal to 'tour' or 'client'.\n\t\tNOTE: to exit search, press ESC.\n";
 }
 
@@ -161,7 +160,8 @@ void runTests() {
 	Client* client3 = new Client("Eugene", "Smith", "+039528736481", "18258924@wxample.com");
 	Client* client4 = new Client("Jakub", "Kowalski", "+347902478299", "1958195145@example.com");
 	Client* client5 = new Client("Maria", "Garcia", "+44123456789", "1524742325@example.com");
-
+	
+	std::cout << "Creating client list:\n\n";
 	List<Client>* listOfClients = new List<Client>;
 	listOfClients->add(client1);
 	listOfClients->add(client2);
@@ -169,6 +169,7 @@ void runTests() {
 	listOfClients->add(client4);
 
 
+	std::cout << "\n\nCreating tour list:\n\n";
 	Tour* tour1 = new Tour("Hawaii Paradise",
 		2500.0,
 		"21.05.2023",
@@ -212,14 +213,30 @@ void runTests() {
 	listOfTours->add(tour3);
 	listOfTours->add(tour4);
 
+	std::cout << "Creating 'Agency' object.\n";
 	agency = new TravelAgency(listOfTours, listOfClients);
 
+	std::cout << "Printing 'Agency' Client and Tour lists.\n\n";
+
 	agency->getTourList()->print();
-	client5->book(tour1);
-	client4->book(tour2);
-	agency->getClientList()->add(client5);
 	agency->getClientList()->print();
 
+
+	std::cout << "\n\nAdding client to 'Agency' client list.\n";
+	agency->getClientList()->add(client5);
+	std::cout << "Adding bookings for Jakub and Maria\n\n";
+	client5->book(tour1);
+	client4->book(tour2);
+
+	agency->getClientList()->print();
+
+	std::cout << "\n\nRemoving booking from Maria\n\n";
+	List<Booking>* MariaList = listOfClients->getItemByName("Maria")->getListOfBookings();
+	MariaList->remove("Hawaii Paradise");
+	MariaList->remove("European Gorgeous Adventure");
+
+
+	
 }
 
 std::string getCurrentDate() {
@@ -369,7 +386,7 @@ void book(std::vector<std::string> command) {
 		Tour* tour;
 		std::string tourName;
 		if (command[2].front() == '"') {
-			tourName = removeQuotes(accumulateStrings(command, 3));
+			tourName = removeQuotes(accumulateStrings(command));
 			tour = agency->getTourList()->getItemByName(tourName);
 		}
 		else {
@@ -397,6 +414,28 @@ void book(std::vector<std::string> command) {
 	}
 }
  
+void unbook(std::vector<std::string> command) {
+	if (command.size() >= 3) {
+		Client* client = agency->getClientList()->getItemByName(command[1]);
+		std::string tourName;
+		if (command[2].front() == '"') {
+			tourName = removeQuotes(accumulateStrings(command));
+		}
+		else {
+			tourName = command[2];
+		}
+		if (client == nullptr) {
+			std::cerr << "ERROR: '" << command[1] << "' was not found.\n";
+			return;
+		}
+
+		client->getListOfBookings()->remove(tourName);
+	}
+	else {
+		std::cout << "ERROR: not enough arguments.\nFrom '--help': 'unbook <client_name> <tour_name>' - unbooks tour for a given client. For tours with\nseveral words in the name put it in \"\".\n";
+	}
+}
+
 void search(std::vector<std::string> command) {
 	if (command.size() >= 2) {
 		for (char& letter : command[1]) {
@@ -507,6 +546,9 @@ void Engine::run() {
 				break;
 			case BOOK:
 				book(command);
+				break;
+			case UNBOOK:
+				unbook(command);
 				break;
 			case SEARCH:
 				search(command);

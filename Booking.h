@@ -18,8 +18,10 @@ public:
 
 	// Getters
 	char* getBookingDate(void);
+	char* getName(void);
 	Tour* getTour(void);
 	bookingStatus getStatus(void);
+	int getId(void);
 
 	char* getCurrentDate();
 
