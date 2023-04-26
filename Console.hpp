@@ -296,29 +296,42 @@ void addNewClient(std::vector<std::string> command) {
 
 void addNewTour(std::vector<std::string> command) {
 	if (command.size() >= 5) {
+		int closedQuoteIndex;
+		std::string tourName;
+		if (command[1].front() == '"') {
+			tourName = removeQuotes(accumulateStrings(command, 1));
+			closedQuoteIndex = 2;
+			while (command[closedQuoteIndex].back() != '"') {
+				closedQuoteIndex++;
+			}
+		}
+		else {
+			tourName = command[2];
+			closedQuoteIndex = 1;
+		}
+
 		const std::regex date("^(?:(?:31(\\/|-|\\.)(?:0?[13578]|1[02]))\\1|(?:(?:29|30)(\\/|-|\\.)(?:0?[13-9]|1[0-2])\\2))(?:(?:1[6-9]|[2-9]\\d)?\\d{2})$|^(?:29(\\/|-|\\.)0?2\\3(?:(?:(?:1[6-9]|[2-9]\\d)?(?:0[48]|[2468][048]|[13579][26])|(?:(?:16|[2468][048]|[3579][26])00))))$|^(?:0?[1-9]|1\\d|2[0-8])(\\/|-|\\.)(?:(?:0?[1-9])|(?:1[0-2]))\\4(?:(?:1[6-9]|[2-9]\\d)?\\d{2})$");
 
+		if (!std::regex_match(command[closedQuoteIndex + 2], date)) {
+			std::cerr << "ERROR: '" << command[closedQuoteIndex + 2] << "' - incorrect data input.\nProper format: 'DD.MM.YYYY'.";
+			return;
+		}
+		else if (compareDate(command[closedQuoteIndex + 2], getCurrentDate())) {
+			std::cerr << "ERROR: '" << command[closedQuoteIndex + 2] << "' is before current date (" << getCurrentDate() << ").\n";
+			return;
+		}
+		else if (!std::regex_match(command[closedQuoteIndex + 3], date)) {
+			std::cerr << "ERROR: '" << command[closedQuoteIndex + 3] << "' - incorrect data input.\nProper format: 'DD.MM.YYYY'.";
+			return;
+		}
+		else if (!compareDate(command[closedQuoteIndex + 2], command[closedQuoteIndex + 3])) {
+			std::cerr << "ERROR: '" << command[closedQuoteIndex + 3] << "' is before '" << command[closedQuoteIndex + 2] << "'.";
+			return;
+		}
 
-		if (!std::regex_match(command[3], date)) {
-			std::cerr << "ERROR: '" << command[3] << "' - incorrect data input.\nProper format: 'DD.MM.YYYY'.";
-			return;
-		}
-		else if (compareDate(command[3], getCurrentDate())) {
-			std::cerr << "ERROR: '" << command[3] << "' is before current date (" << getCurrentDate() << ").";
-			return;
-		}
-		else if (!std::regex_match(command[4], date)) {
-			std::cerr << "ERROR: '" << command[4] << "' - incorrect data input.\nProper format: 'DD.MM.YYYY'.";
-			return;
-		}
-		else if (!compareDate(command[3], command[4])) {
-			std::cerr << "ERROR: '" << command[4] << "' is before '" << command[3] << "'.";
-			return;
-		}
-
-		Tour* tour = new Tour(command[1].c_str(), std::stof(command[2]), command[3].c_str(), command[4].c_str(), getDescription().c_str());
+		Tour* tour = new Tour(tourName.c_str(), std::stof(command[closedQuoteIndex + 1]), command[closedQuoteIndex + 2].c_str(), command[closedQuoteIndex + 3].c_str(), getDescription().c_str());
 		if (agency->getTourList()->find(tour)) {
-			std::cerr << "ERROR: tour '" << command[1] << "' already exists.\n";
+			std::cerr << "ERROR: tour '" << tourName << "' already exists.\n";
 			return;
 		}
 		agency->getTourList()->add(tour);
@@ -342,7 +355,7 @@ void removeClient(std::vector<std::string> command) {
 
 void removeTour(std::vector<std::string> command) {
 	if (command.size() >= 2) {
-		if (command[1][0] == '\"') {
+		if (command[1].front() == '\"') {
 			std::string tourName;
 			for (size_t i = 2; i < command.size(); i++) {
 				if (command[i][command[i].length() - 1] == '"') {
