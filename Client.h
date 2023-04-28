@@ -29,7 +29,7 @@ public:
     void setPhoneNumber(const char* n);
     void setEmail(const char* n);
 
-    void book(Tour* tr, int numOfCl = 1);
+    void book(Tour* tr);
     void print(void);
     std::string toString();
 

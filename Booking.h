@@ -21,7 +21,6 @@ public:
 	char* getName(void);
 	Tour* getTour(void);
 	bookingStatus getStatus(void);
-	int getId(void);
 
 	char* getCurrentDate();
 

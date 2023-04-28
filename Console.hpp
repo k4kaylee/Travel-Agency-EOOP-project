@@ -155,21 +155,21 @@ void help() {
 }
 
 void runTests() {
-	Client* client1 = new Client("Nikolai", "Borutko", "+124134674122", "10256381@wxample.com");
-	Client* client2 = new Client("Pavel", "Fuggy", "+612567487291", "012412495@example.com");
-	Client* client3 = new Client("Eugene", "Smith", "+039528736481", "18258924@wxample.com");
-	Client* client4 = new Client("Jakub", "Kowalski", "+347902478299", "1958195145@example.com");
-	Client* client5 = new Client("Maria", "Garcia", "+44123456789", "1524742325@example.com");
+	Client* Nikolai = new Client("Nikolai", "Borutko", "+124134674122", "10256381@wxample.com");
+	Client* Pavel = new Client("Pavel", "Fuggy", "+612567487291", "012412495@example.com");
+	Client* Eugene = new Client("Eugene", "Smith", "+039528736481", "18258924@wxample.com");
+	Client* Jakub = new Client("Jakub", "Kowalski", "+347902478299", "1958195145@example.com");
+	Client* Maria = new Client("Maria", "Garcia", "+44123456789", "1524742325@example.com");
 	
-	std::cout << "Creating client list:\n\n";
 	List<Client>* listOfClients = new List<Client>;
-	listOfClients->add(client1);
-	listOfClients->add(client2);
-	listOfClients->add(client3);
-	listOfClients->add(client4);
+	listOfClients->add(Nikolai);
+	listOfClients->add(Pavel);
+	listOfClients->add(Eugene);
+	listOfClients->add(Jakub);
 
 
-	std::cout << "\n\nCreating tour list:\n\n";
+	std::cout << "Creating client list.";
+	std::cout << "\nCreating tour list.\n";
 	Tour* tour1 = new Tour("Hawaii Paradise",
 		2500.0,
 		"21.05.2023",
@@ -223,10 +223,10 @@ void runTests() {
 
 
 	std::cout << "\n\nAdding client to 'Agency' client list.\n";
-	agency->getClientList()->add(client5);
+	agency->getClientList()->add(Maria);
 	std::cout << "Adding bookings for Jakub and Maria\n\n";
-	client5->book(tour1);
-	client4->book(tour2);
+	Maria->book(tour1);
+	Jakub->book(tour2);
 
 	agency->getClientList()->print();
 
@@ -235,7 +235,14 @@ void runTests() {
 	MariaList->remove("Hawaii Paradise");
 	MariaList->remove("European Gorgeous Adventure");
 
+	std::cout << "\nTrying to book the tour which is already booked:\n";
+	Jakub->book(tour2);
 
+	std::cout << "\nRemoving tour from the list.\n";
+	listOfTours->remove(tour2->getName());
+
+	listOfTours->print();
+	listOfClients->print();
 	
 }
 
@@ -369,12 +376,12 @@ void removeTour(std::vector<std::string> command) {
 								return acc + " " + newWord;
 						}
 					);
-					agency->getTourList()->remove(removeQuotes(tourName));
+					tourName = removeQuotes(tourName);
 					return;
 				}
 			}
 		}
-		agency->getTourList()->remove(command[1]);
+				
 		return;
 	}
 	else {
@@ -414,13 +421,7 @@ void book(std::vector<std::string> command) {
 			return;
 		}
 
-		Booking* newBooking = new Booking(tour);
-		if (client->getListOfBookings()->find(newBooking))
-			std::cerr << "ERROR: booking of '" << tourName << "' already exists.\n";
-		else{
-			client->book(tour);
-			std::cout << "Tour '" << tourName << "' was booked by '" << command[1] << "'.\n";
-		}
+		client->book(tour);
 	}
 	else {
 		std::cout << "ERROR: not enough arguments.\nFrom '--help': 'book <client_name> <tour_name>' - books tour for a given client. For tours with\nseveral words in the name put it in \"\".\n";

@@ -11,13 +11,11 @@ class Tour;
 
 template<typename T>
 class List {
-private:
+public:
 	struct Item {
 		T* ptr;
 		Item* next;
 	};
-	Item* head;
-public:
 	List() {
 		head = nullptr;
 	}
@@ -219,4 +217,7 @@ public:
 		}
 		return nullptr;
 	};
+
+private:
+	Item* head;
 };

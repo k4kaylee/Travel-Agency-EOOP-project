@@ -68,9 +68,14 @@ void Client::print() {
         listOfBookings->print();
 }
 
-void Client::book(Tour* tr, int numOfCl) {
+void Client::book(Tour* tr) {
     Booking* newBooking = new Booking(tr);
-    listOfBookings->add(newBooking);
+    if (listOfBookings->find(newBooking))
+        std::cerr << "ERROR: booking of '" << tr->getName() << "' already exists.\n";
+    else {
+        listOfBookings->add(newBooking);
+        std::cout << "Tour '" << tr->getName() << "' was booked by '" << this->name << "'.\n";
+    }
 }
 
 
