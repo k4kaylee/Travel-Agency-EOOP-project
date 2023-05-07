@@ -76,7 +76,7 @@ std::string removeQuotes(std::string str) {
 
 std::string accumulateStrings(std::vector<std::string> command, int index = 2){
 	std::string str;
-	for (size_t i = index; i < command.size(); ++i) {
+	for (size_t i = index; i < command.size(); i++) {
 		if (i == index) {
 			str += command[i];
 			continue;
@@ -194,7 +194,7 @@ void runTests() {
 \nthat takes you through the heart of Kenya and Tanzania. Get up close\
 \nand personal with some of Africa's most majestic wildlife.\n");
 
-	Tour* tour4 = new Tour("Paris Tour",
+	Tour* tour4 = new Tour("Paris City Tour",
 		1200.0,
 		"01.07.2023",
 		"05.07.2023",
@@ -410,6 +410,7 @@ void book(std::vector<std::string> command) {
 			tour = agency->getTourList()->getItemByName(tourName);
 		}
 		else {
+			tourName = command[2];
 			tour = agency->getTourList()->getItemByName(command[2]);
 		}
 		if (client == nullptr) {
@@ -417,7 +418,7 @@ void book(std::vector<std::string> command) {
 			return;
 		}
 		else if (tour == nullptr) {
-			std::cerr << "ERROR: '" << command[2] << "' was not found.\n";
+			std::cerr << "ERROR: '" << tourName << "' was not found.\n";
 			return;
 		}
 
@@ -443,7 +444,8 @@ void unbook(std::vector<std::string> command) {
 			return;
 		}
 
-		client->getListOfBookings()->remove(tourName);
+		Tour* toRemove = new Tour(tourName.c_str());
+		client->unbook(toRemove);
 	}
 	else {
 		std::cout << "ERROR: not enough arguments.\nFrom '--help': 'unbook <client_name> <tour_name>' - unbooks tour for a given client. For tours with\nseveral words in the name put it in \"\".\n";

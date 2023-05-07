@@ -30,6 +30,7 @@ public:
     void setEmail(const char* n);
 
     void book(Tour* tr);
+    void unbook(Tour* tr);
     void print(void);
     std::string toString();
 

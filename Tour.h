@@ -9,7 +9,7 @@ private:
 	char* finishDate;
 	char* description;
 public:
-	Tour(const char* nm, float prc, const char* strtDt, const char* fnshDt, const char* dscrptn);
+	Tour(const char* nm, float prc = 0, const char* strtDt = "XX.XX.XXXX", const char* fnshDt = "XX.XX.XXXX", const char* dscrptn = "");
 	~Tour(void);
 
 	void setName(const char* nm);

@@ -78,6 +78,14 @@ void Client::book(Tour* tr) {
     }
 }
 
+void Client::unbook(Tour* tr) {
+    Booking* toRemove = new Booking(tr);
+    if (!listOfBookings->find(toRemove))
+        std::cerr << "ERROR: booking of '" << tr->getName() << "' does not exist.\n";
+    else {
+        listOfBookings->remove(toRemove->getTour()->getName());
+    }
+}
 
 std::string Client::toString() {
     std::stringstream ss;
