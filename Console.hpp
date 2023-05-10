@@ -241,8 +241,10 @@ void runTests() {
 	listOfTours->remove(tour2);
 
 	listOfTours->print();
+
+	std::cout << "\nChecking that all the bookings of removed tour were also deleted.\n";
 	listOfClients->print();
-	
+	std::cout << "\n\nEnd of tests.\n";
 }
 
 std::string getCurrentDate() {
@@ -386,8 +388,16 @@ void removeTour(std::vector<std::string> command) {
 				}
 			}
 		}
-		Tour* toRemove = new Tour(tourName.c_str());
-		agency->getTourList()->remove(toRemove);
+		List<Tour>* tourList = agency->getTourList();
+		Tour* toRemove = tourList->getItemByName(tourName);
+		if (toRemove != nullptr) {
+			agency->getTourList()->remove(toRemove);
+			List<Client>* clientList = agency->getClientList();
+		}
+		else {
+			std::cerr << "ERROR: '" << toRemove->getName() << "' does not exist.\n";
+		}
+
 		return;
 	}
 	else {

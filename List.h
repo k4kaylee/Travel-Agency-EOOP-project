@@ -182,7 +182,6 @@ public:
 		else {
 			previous->next = current->next;
 		}
-		std::cout << "'" << item->getName() << "'" << " was deleted.\n";
 		delete current->ptr;
 		delete current;
 	}
