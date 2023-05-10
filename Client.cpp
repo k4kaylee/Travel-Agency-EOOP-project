@@ -83,7 +83,8 @@ void Client::unbook(Tour* tr) {
     if (!listOfBookings->find(toRemove))
         std::cerr << "ERROR: booking of '" << tr->getName() << "' does not exist.\n";
     else {
-        listOfBookings->remove(toRemove->getTour()->getName());
+        listOfBookings->remove(toRemove);
+        std::cerr << "Booking of '" << tr->getName() << "' was removed.\n";
     }
 }
 

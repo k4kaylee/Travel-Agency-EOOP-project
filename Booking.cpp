@@ -15,7 +15,6 @@ Booking::Booking(Tour* tr, bookingStatus st) {
 
 Booking::~Booking() {
 	delete[] bookingDate;
-	delete tour;
 }
 
 // Getters

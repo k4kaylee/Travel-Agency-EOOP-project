@@ -231,15 +231,14 @@ void runTests() {
 	agency->getClientList()->print();
 
 	std::cout << "\n\nRemoving booking from Maria\n\n";
-	List<Booking>* MariaList = listOfClients->getItemByName("Maria")->getListOfBookings();
-	MariaList->remove("Hawaii Paradise");
-	MariaList->remove("European Gorgeous Adventure");
+	Maria->unbook(tour1);
+	Maria->unbook(tour2);
 
 	std::cout << "\nTrying to book the tour which is already booked:\n";
 	Jakub->book(tour2);
 
 	std::cout << "\nRemoving tour from the list.\n";
-	listOfTours->remove(tour2->getName());
+	listOfTours->remove(tour2);
 
 	listOfTours->print();
 	listOfClients->print();
@@ -350,8 +349,15 @@ void addNewTour(std::vector<std::string> command) {
 }
              
 void removeClient(std::vector<std::string> command) {
+	List<Client>* clientList = agency->getClientList();
 	if (command.size() >= 2) {
-		agency->getClientList()->remove(command[1]);
+		Client* toRemove = clientList->getItemByName(command[1]);
+		if (toRemove != nullptr) {
+			clientList->remove(toRemove);
+		}
+		else {
+			std::cerr << "ERROR: such client was not found.\n";
+		}
 		return;
 	}
 	else {
@@ -362,8 +368,8 @@ void removeClient(std::vector<std::string> command) {
 
 void removeTour(std::vector<std::string> command) {
 	if (command.size() >= 2) {
+		std::string tourName = command[1];
 		if (command[1].front() == '\"') {
-			std::string tourName;
 			for (size_t i = 2; i < command.size(); i++) {
 				if (command[i][command[i].length() - 1] == '"') {
 					tourName = std::accumulate(command.begin() + 1,
@@ -377,11 +383,11 @@ void removeTour(std::vector<std::string> command) {
 						}
 					);
 					tourName = removeQuotes(tourName);
-					return;
 				}
 			}
 		}
-				
+		Tour* toRemove = new Tour(tourName.c_str());
+		agency->getTourList()->remove(toRemove);
 		return;
 	}
 	else {

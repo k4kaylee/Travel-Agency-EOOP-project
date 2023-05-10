@@ -1,9 +1,12 @@
 #define _CRT_SECURE_NO_WARNINGS
 #include "Tour.h"
+#include "TravelAgency.h"
+#include "List.h"
 #include <cstring>
 #include <sstream>
 #include <iostream>
 
+extern TravelAgency* agency;
 
 Tour::Tour(const char* nm, float prc, const char* strtDt, const char* fnshDt, const char* dscrptn) {
 	setName(nm);
@@ -14,6 +17,17 @@ Tour::Tour(const char* nm, float prc, const char* strtDt, const char* fnshDt, co
 }
 
 Tour::~Tour() {
+	//Removing all the bookings connected to this tour
+	List<Client>* listOfClients = agency->getClientList();
+	List<Booking>* listOfBookings;
+	for (auto currentClient = listOfClients->getHead(); currentClient != nullptr; currentClient = currentClient->next) {
+		listOfBookings = currentClient->ptr->getListOfBookings();
+		Booking* toFind = new Booking(this);
+		if (listOfBookings->find(toFind)) {
+			listOfBookings->remove(toFind);
+		}
+		delete toFind;
+	}
 	delete[] name;
 	delete[] finishDate;
 	delete[] startDate;

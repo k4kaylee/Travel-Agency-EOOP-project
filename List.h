@@ -7,8 +7,6 @@ class Tour;
 #include <algorithm>
 #include <vector>
 
-
-
 template<typename T>
 class List {
 public:
@@ -163,18 +161,18 @@ public:
 		}
 	}
 
-	void remove(std::string name) {
+	void remove(T* item) {
 		Item* current = NULL;
 		Item* previous = NULL;
 		for (Item* temp = head; temp != NULL; temp = temp->next) {
-			if (temp->ptr->getName() == name) {
+			if (temp->ptr->isEqual(item)) {
 				current = temp;
 				break;
 			}
 			previous = temp;
 		}
 		if (current == NULL) {
-			std::cout << "'" << name << "'" << " was not found.\n";
+			std::cout << "'" << item->getName() << "'" << " was not found.\n";
 			return;
 		}
 
@@ -184,8 +182,9 @@ public:
 		else {
 			previous->next = current->next;
 		}
+		std::cout << "'" << item->getName() << "'" << " was deleted.\n";
+		delete current->ptr;
 		delete current;
-		std::cout << "'" << name << "'" << " was deleted.\n";
 	}
 
 	std::string toString() {
